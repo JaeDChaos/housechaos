@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chaos Pantry — House Chaos</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>😋</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Chewy&family=Indie+Flower&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #1a1025;
+  --bg2: #221535;
+  --bg3: #2d1d47;
+  --card: #1e1230;
+  --card2: #261840;
+  --crimson: #c0392b;
+  --crimson2: #e74c3c;
+  --purple: #7c3aed;
+  --purple2: #a855f7;
+  --gold: #d4a017;
+  --gold2: #f0c040;
+  --teal: #0d9488;
+  --teal2: #2dd4bf;
+  --text: #f0e6ff;
+  --text2: #b8a0d8;
+  --text3: #7a6a95;
+  --border: rgba(160,120,220,0.18);
+  --border2: rgba(160,120,220,0.35);
+  --ok: #16a34a;
+  --ok-bg: rgba(22,163,74,0.15);
+  --low: #d97706;
+  --low-bg: rgba(217,119,6,0.15);
+  --out: #dc2626;
+  --out-bg: rgba(220,38,38,0.15);
+  --amazon: #ff9900;
+  --doordash: #ff3008;
+  --meijer: #0066cc;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(124,58,237,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(192,57,43,0.08) 0%, transparent 50%);
+}
+header {
+  padding: 1.5rem 2rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: rgba(26,16,37,0.8);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(8px);
+}
+.logo {
+  font-family: 'Chewy', cursive;
+  font-size: 1.8rem;
+  color: var(--purple2);
+  letter-spacing: 1px;
+  line-height: 1;
+}
+.logo span { color: var(--crimson2); }
+.tagline {
+  font-family: 'Indie Flower', cursive;
+  font-size: 0.95rem;
+  color: var(--text3);
+  margin-top: 2px;
+}
+.header-right { margin-left: auto; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.summary-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.pill-ok { background: var(--ok-bg); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+.pill-low { background: var(--low-bg); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+.pill-out { background: var(--out-bg); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+.btn {
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--purple); color: #fff; }
+.btn-primary:hover { background: var(--purple2); transform: translateY(-1px); }
+.btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border2); }
+.btn-ghost:hover { background: var(--bg3); color: var(--text); }
+.btn-sm { padding: 4px 10px; font-size: 12px; }
+main { padding: 1.5rem 2rem; max-width: 1100px; margin: 0 auto; }
+.section-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
+}
+.tab {
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.tab:hover { color: var(--text2); border-color: var(--border2); }
+.tab.active { background: var(--purple); color: #fff; border-color: var(--purple); }
+.section-title {
+  font-family: 'Chewy', cursive;
+  font-size: 1.3rem;
+  color: var(--purple2);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* COUNTER CARDS */
+.counter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.counter-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  transition: border-color 0.2s;
+}
+.counter-card:hover { border-color: var(--border2); }
+.counter-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  gap: 8px;
+}
+.counter-card-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.2;
+}
+.counter-card-meta {
+  font-size: 12px;
+  color: var(--text3);
+  margin-top: 2px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.store-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.store-amazon { background: rgba(255,153,0,0.15); color: #ffb347; border: 1px solid rgba(255,153,0,0.3); }
+.store-doordash { background: rgba(255,48,8,0.15); color: #ff6b6b; border: 1px solid rgba(255,48,8,0.3); }
+.store-meijer { background: rgba(0,102,204,0.15); color: #60a5fa; border: 1px solid rgba(0,102,204,0.3); }
+.total-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.75rem;
+}
+.total-count {
+  font-family: 'Chewy', cursive;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--purple2);
+}
+.total-count.warn { color: var(--gold2); }
+.total-count.danger { color: var(--crimson2); }
+.total-label { font-size: 12px; color: var(--text3); }
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--purple2);
+  transition: width 0.3s;
+}
+.progress-fill.warn { background: var(--gold2); }
+.progress-fill.danger { background: var(--crimson2); }
+.reorder-note {
+  font-size: 11px;
+  color: var(--text3);
+  margin-bottom: 0.75rem;
+  font-family: 'Indie Flower', cursive;
+  font-size: 13px;
+}
+.reorder-note.urgent { color: var(--crimson2); }
+.reorder-note.soon { color: var(--gold2); }
+.flavor-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 0.75rem;
+}
+.flavor-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--text2);
+  cursor: default;
+}
+.flavor-chip.depleted {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+.flavor-count {
+  font-weight: 700;
+  color: var(--purple2);
+  min-width: 16px;
+  text-align: center;
+}
+.flavor-count.warn { color: var(--gold2); }
+.flavor-count.danger { color: var(--crimson2); }
+.flavor-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text3);
+  font-size: 14px;
+  padding: 0 2px;
+  line-height: 1;
+  transition: color 0.1s;
+  font-family: 'Nunito', sans-serif;
+}
+.flavor-btn:hover { color: var(--crimson2); }
+.flavor-btn.plus:hover { color: #4ade80; }
+.card-footer { display: flex; gap: 6px; justify-content: flex-end; margin-top: 6px; }
+
+/* SCHEDULE CARDS */
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.schedule-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+}
+.schedule-card.status-ok { border-left: 3px solid var(--ok); }
+.schedule-card.status-low { border-left: 3px solid var(--low); }
+.schedule-card.status-out { border-left: 3px solid var(--out); }
+.schedule-name { font-weight: 700; font-size: 15px; color: var(--text); margin-bottom: 2px; }
+.schedule-detail { font-size: 12px; color: var(--text3); margin-bottom: 10px; }
+.schedule-info { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+.info-block { background: var(--bg3); border-radius: 8px; padding: 6px 10px; }
+.info-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.info-val { font-size: 14px; font-weight: 700; color: var(--text); }
+.info-val.reorder { color: var(--purple2); }
+.info-val.urgent { color: var(--crimson2); }
+.info-val.soon { color: var(--gold2); }
+.schedule-actions { display: flex; gap: 6px; }
+
+/* PANTRY TOGGLE */
+.pantry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+.pantry-cat-title {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+  margin-top: 0.5rem;
+}
+.pantry-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  gap: 8px;
+  transition: all 0.15s;
+}
+.pantry-item.out-of-stock {
+  opacity: 0.5;
+  border-style: dashed;
+}
+.pantry-name { font-size: 13px; color: var(--text2); flex: 1; }
+.pantry-name.out { color: var(--text3); }
+.toggle-btn {
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.toggle-btn.on { background: var(--ok); }
+.toggle-btn.off { background: var(--text3); }
+.toggle-btn::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: white;
+  top: 3px;
+  transition: left 0.2s;
+}
+.toggle-btn.on::after { left: 19px; }
+.toggle-btn.off::after { left: 3px; }
+.need-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--out-bg);
+  color: #f87171;
+  white-space: nowrap;
+}
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  width: min(500px, 92vw);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.modal-title {
+  font-family: 'Chewy', cursive;
+  font-size: 1.4rem;
+  color: var(--purple2);
+  margin-bottom: 1.25rem;
+}
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 12px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+.field input, .field select, .field textarea {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  outline: none;
+}
+.field input:focus, .field select:focus { border-color: var(--purple); }
+.field select option { background: var(--bg2); }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1.25rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+.flavors-editor { margin-top: 8px; }
+.flavor-row { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
+.flavor-row input { flex: 1; }
+.remove-flavor { background: none; border: none; cursor: pointer; color: var(--crimson2); font-size: 16px; padding: 0 4px; font-family: 'Nunito', sans-serif; }
+.add-flavor-btn { font-size: 12px; color: var(--purple2); background: none; border: none; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 700; padding: 4px 0; }
+
+/* UPCOMING */
+.upcoming-list { margin-bottom: 2rem; }
+.upcoming-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  margin-bottom: 6px;
+}
+.upcoming-date {
+  font-family: 'Chewy', cursive;
+  font-size: 1.1rem;
+  color: var(--purple2);
+  min-width: 70px;
+}
+.upcoming-date.urgent { color: var(--crimson2); }
+.upcoming-date.soon { color: var(--gold2); }
+.upcoming-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.upcoming-detail { font-size: 12px; color: var(--text3); }
+
+.empty { text-align: center; padding: 2rem; color: var(--text3); font-family: 'Indie Flower', cursive; font-size: 1.1rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">Chaos <span>Pantry</span></div>
+    <div class="tagline">house chaos restocking HQ 🏠</div>
+  </div>
+  <div class="header-right">
+    <div class="summary-pills" id="summaryPills"></div>
+    <button class="btn btn-primary btn-sm" onclick="openModal('counter')">+ counter item</button>
+    <button class="btn btn-ghost btn-sm" onclick="openModal('schedule')">+ scheduled item</button>
+    <button class="btn btn-ghost btn-sm" onclick="openModal('pantry')">+ pantry item</button>
+  </div>
+</header>
+
+<main>
+  <div class="section-tabs">
+    <button class="tab active" onclick="setView('dashboard')" id="tab-dashboard">dashboard</button>
+    <button class="tab" onclick="setView('counters')" id="tab-counters">snacks & drinks</button>
+    <button class="tab" onclick="setView('schedule')" id="tab-schedule">meal prep & staples</button>
+    <button class="tab" onclick="setView('pantry')" id="tab-pantry">pantry flavors</button>
+    <button class="tab" onclick="setView('upcoming')" id="tab-upcoming">upcoming orders</button>
+  </div>
+
+  <div id="view-dashboard"></div>
+  <div id="view-counters" style="display:none"></div>
+  <div id="view-schedule" style="display:none"></div>
+  <div id="view-pantry" style="display:none"></div>
+  <div id="view-upcoming" style="display:none"></div>
+</main>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+function load(key, def) {
+  try { return JSON.parse(localStorage.getItem(key)) || def; } catch(e) { return def; }
+}
+function save(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+// Counter items: snacks/drinks with flavors
+let counters = load('cp_counters', [
+  { id:'chips', name:'Chips', store:'amazon', perDay:2, flavors:[
+    {name:'Nacho Doritos', count:8, max:8},
+    {name:'Cool Ranch Doritos', count:6, max:6},
+    {name:'Cheetos Crunchy', count:6, max:6},
+    {name:'Sour Cream & Onion', count:4, max:4},
+    {name:'White Cheddar Popcorn', count:4, max:4},
+    {name:'Cheetos Puffs', count:4, max:4},
+    {name:'Harvest Cheddar', count:4, max:4},
+    {name:'Rold Gold Pretzels', count:4, max:4},
+  ]},
+  { id:'cookies', name:'Cookies & Crackers', store:'amazon', perDay:2, flavors:[
+    {name:'Oreo Minis', count:5, max:5},
+    {name:'Ritz Bits', count:5, max:5},
+    {name:'Nutter Butter Bites', count:5, max:5},
+    {name:'Chips Ahoy! Minis', count:5, max:5},
+  ]},
+  { id:'gatorade', name:'Gatorade', store:'amazon', perDay:1.5, flavors:[
+    {name:'Lemon-Lime', count:8, max:8},
+    {name:'Orange', count:8, max:8},
+    {name:'Fruit Punch', count:8, max:8},
+  ]},
+  { id:'cerealbars', name:'Cereal Bars', store:'amazon', perDay:1.1, flavors:[
+    {name:'Cereal Bars', count:16, max:16},
+  ]},
+]);
+
+// Schedule items: meal prep / staples with weekly cadence
+let scheduled = load('cp_scheduled', [
+  { id:'rice', name:'Basmati Rice', store:'amazon', unit:'cups uncooked', amountPerWeek:3, onHand:3, note:'3 cups = 7 meals', lastOrdered: dateStr(-3) },
+  { id:'chicken', name:'Chicken Breast', store:'doordash', unit:'lbs', amountPerWeek:2, onHand:2, note:'~1 cup cooked per meal, 7 meals/wk', lastOrdered: dateStr(-3) },
+  { id:'veggies', name:'Frozen Veggie Mix', store:'doordash', unit:'bags', amountPerWeek:3, onHand:3, note:'3-bag mix: corn/carrots/peas/etc', lastOrdered: dateStr(-3) },
+  { id:'trailmix', name:'Trail Mix Base', store:'amazon', unit:'2.2lb bags', amountPerWeek:0.4, onHand:1, note:'2x 1-cup containers daily + choc chips', lastOrdered: dateStr(-7) },
+  { id:'water', name:'Electrolyte Water', store:'doordash', unit:'34oz bottles', amountPerWeek:7, onHand:7, note:'1 full bottle (34oz) per day', lastOrdered: dateStr(-3) },
+  { id:'chocchips', name:'Chocolate Chips', store:'amazon', unit:'bags', amountPerWeek:0.25, onHand:1, note:'mixed into trail mix daily', lastOrdered: dateStr(-14) },
+]);
+
+// Pantry: flavor/condiment inventory (have or need)
+let pantry = load('cp_pantry', [
+  {cat:'Condiments & Spreads', items:[
+    "Duke's Mayo","Homemade Honey Mustard","Yellow Mustard","Dijon Mustard","Ketchup","Crystal Hot Sauce","Worcestershire Sauce","Soy Sauce","Country Crock Butter","Garlic Herb Compound Butter"
+  ].map(n=>({name:n, have:true}))},
+  {cat:'Acids', items:[
+    "Lemon Juice","Lime Juice","Red Wine Vinegar","Balsamic Vinegar","Apple Cider Vinegar"
+  ].map(n=>({name:n, have:true}))},
+  {cat:'Asian & Specialty Sauces', items:[
+    "Gochujang","Sweet Onion Teriyaki","Teriyaki Sauce","Orange Sauce","Honey Sesame Sauce","Medium Buffalo Sauce","Raspberry Chipotle","Chipotle in Adobo"
+  ].map(n=>({name:n, have:true}))},
+  {cat:'Flavor Builders', items:[
+    "Better than Bouillon — Chili","Better than Bouillon — Smoky Chipotle","Better than Bouillon — Italian Herb","Better than Bouillon — Chicken","Better than Bouillon — Beef","Better than Bouillon — Veggie","Kimchi"
+  ].map(n=>({name:n, have:true}))},
+  {cat:'Dairy & Cheese', items:[
+    "Pepper Jack Cheese","Cheddar Cheese","Parmesan Cheese"
+  ].map(n=>({name:n, have:true}))},
+  {cat:'Sweeteners', items:[
+    "Honey","Brown Sugar"
+  ].map(n=>({name:n, have:true}))},
+  {cat:'Spices & Dry', items:[
+    "Thyme","Sage","Paprika","Cayenne","Salt","Pepper","Cinnamon","Nutmeg","Cloves","Curry Powder"
+  ].map(n=>({name:n, have:true}))},
+]);
+
+function dateStr(daysOffset) {
+  const d = new Date();
+  d.setDate(d.getDate() + daysOffset);
+  return d.toISOString().split('T')[0];
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,5); }
+
+// ── CALCULATIONS ─────────────────────────────────────────────────────────────
+function counterTotal(c) { return c.flavors.reduce((s,f)=>s+f.count,0); }
+function counterMax(c) { return c.flavors.reduce((s,f)=>s+f.max,0); }
+function counterDaysLeft(c) { return c.perDay > 0 ? counterTotal(c) / c.perDay : 99; }
+function counterReorderDate(c) {
+  const daysLeft = counterDaysLeft(c);
+  const reorderAt = Math.max(0, daysLeft - 2);
+  const d = new Date();
+  d.setDate(d.getDate() + Math.floor(reorderAt));
+  return d;
+}
+function counterStatus(c) {
+  const days = counterDaysLeft(c);
+  if (days <= 0) return 'out';
+  if (days <= 3) return 'low';
+  return 'ok';
+}
+function scheduleDaysLeft(s) {
+  return s.amountPerWeek > 0 ? (s.onHand / s.amountPerWeek) * 7 : 99;
+}
+function scheduleReorderDate(s) {
+  const days = scheduleDaysLeft(s);
+  const reorderAt = Math.max(0, days - 2);
+  const d = new Date();
+  d.setDate(d.getDate() + Math.floor(reorderAt));
+  return d;
+}
+function scheduleStatus(s) {
+  const days = scheduleDaysLeft(s);
+  if (days <= 0) return 'out';
+  if (days <= 4) return 'low';
+  return 'ok';
+}
+function formatDateRelative(d) {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const diff = Math.round((d - today) / 86400000);
+  if (diff <= 0) return 'order now!';
+  if (diff === 1) return 'tomorrow';
+  if (diff < 7) return `in ${diff} days`;
+  const opts = {month:'short', day:'numeric'};
+  return d.toLocaleDateString('en-US', opts);
+}
+function formatDateFull(d) {
+  return d.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'});
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+let currentView = 'dashboard';
+
+function setView(v) {
+  currentView = v;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+v).classList.add('active');
+  ['dashboard','counters','schedule','pantry','upcoming'].forEach(view => {
+    document.getElementById('view-'+view).style.display = view === v ? '' : 'none';
+  });
+  renderView(v);
+}
+
+function renderAll() {
+  renderSummary();
+  renderView(currentView);
+}
+
+function renderSummary() {
+  const allItems = [
+    ...counters.map(c => counterStatus(c)),
+    ...scheduled.map(s => scheduleStatus(s)),
+  ];
+  const ok = allItems.filter(s=>s==='ok').length;
+  const low = allItems.filter(s=>s==='low').length;
+  const out = allItems.filter(s=>s==='out').length;
+  document.getElementById('summaryPills').innerHTML = `
+    <span class="pill pill-ok">${ok} good</span>
+    ${low ? `<span class="pill pill-low">${low} low</span>` : ''}
+    ${out ? `<span class="pill pill-out">${out} out</span>` : ''}
+  `;
+}
+
+function renderView(v) {
+  if (v === 'dashboard') renderDashboard();
+  else if (v === 'counters') renderCounters();
+  else if (v === 'schedule') renderSchedule();
+  else if (v === 'pantry') renderPantry();
+  else if (v === 'upcoming') renderUpcoming();
+}
+
+function renderDashboard() {
+  const el = document.getElementById('view-dashboard');
+  const urgent = [
+    ...counters.filter(c=>counterStatus(c)!=='ok').map(c=>({name:c.name, status:counterStatus(c), date:counterReorderDate(c), type:'counter'})),
+    ...scheduled.filter(s=>scheduleStatus(s)!=='ok').map(s=>({name:s.name, status:scheduleStatus(s), date:scheduleReorderDate(s), type:'schedule'})),
+  ].sort((a,b)=>a.date-b.date);
+
+  const outOfStock = pantry.flatMap(cat=>cat.items.filter(i=>!i.have)).map(i=>i.name);
+
+  let html = `<div class="section-title">needs attention</div>`;
+  if (urgent.length === 0 && outOfStock.length === 0) {
+    html += `<div class="empty">all stocked up! riley approves 🐺</div>`;
+  } else {
+    html += `<div class="upcoming-list">`;
+    urgent.forEach(item => {
+      const cls = item.status === 'out' ? 'urgent' : 'soon';
+      html += `<div class="upcoming-item">
+        <div class="upcoming-date ${cls}">${formatDateRelative(item.date)}</div>
+        <div>
+          <div class="upcoming-name">${item.name}</div>
+          <div class="upcoming-detail">${item.status === 'out' ? 'out of stock' : 'running low'}</div>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+    if (outOfStock.length > 0) {
+      html += `<div class="section-title" style="margin-top:1rem">pantry needs</div>`;
+      html += `<div style="display:flex;flex-wrap:wrap;gap:6px;">`;
+      outOfStock.forEach(name => {
+        html += `<span class="need-badge">${name}</span>`;
+      });
+      html += `</div>`;
+    }
+  }
+
+  html += `<div class="section-title" style="margin-top:2rem">quick counter tap</div>`;
+  html += `<div class="counter-grid">` + counters.map(renderCounterCard).join('') + `</div>`;
+  el.innerHTML = html;
+}
+
+function renderCounters() {
+  const el = document.getElementById('view-counters');
+  el.innerHTML = `<div class="section-title">snacks & drinks</div><div class="counter-grid">${counters.map(renderCounterCard).join('')}</div>`;
+}
+
+function renderCounterCard(c) {
+  const total = counterTotal(c);
+  const max = counterMax(c);
+  const pct = max > 0 ? Math.round((total/max)*100) : 0;
+  const days = counterDaysLeft(c);
+  const status = counterStatus(c);
+  const reorder = counterReorderDate(c);
+  const reorderStr = formatDateRelative(reorder);
+  const colorClass = status === 'out' ? 'danger' : (status === 'low' ? 'warn' : '');
+  const noteClass = status === 'out' ? 'urgent' : (status === 'low' ? 'soon' : '');
+  const storeClass = 'store-' + c.store;
+
+  let flavorsHtml = c.flavors.map((f,fi) => {
+    const fc = f.count <= 0 ? 'danger' : (f.count <= 1 ? 'warn' : '');
+    return `<div class="flavor-chip ${f.count<=0?'depleted':''}">
+      <button class="flavor-btn plus" onclick="adjustFlavor('${c.id}',${fi},1)" title="+1">+</button>
+      <span class="flavor-count ${fc}">${f.count}</span>
+      <span>${f.name}</span>
+      <button class="flavor-btn" onclick="adjustFlavor('${c.id}',${fi},-1)" title="-1">−</button>
+    </div>`;
+  }).join('');
+
+  return `<div class="counter-card">
+    <div class="counter-card-header">
+      <div>
+        <div class="counter-card-name">${c.name}</div>
+        <div class="counter-card-meta">
+          <span>${c.perDay}/day</span>
+          <span class="store-badge ${storeClass}">${c.store}</span>
+        </div>
+      </div>
+    </div>
+    <div class="total-bar">
+      <div class="total-count ${colorClass}">${total}</div>
+      <div class="total-label">of ${max} bags left<br><span style="font-size:11px">${days > 0 ? Math.floor(days)+' days supply' : 'out of stock'}</span></div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill ${colorClass}" style="width:${pct}%"></div></div>
+    <div class="reorder-note ${noteClass}">reorder ${reorderStr}</div>
+    <div class="flavor-grid">${flavorsHtml}</div>
+    <div class="card-footer">
+      <button class="btn btn-ghost btn-sm" onclick="restockCounter('${c.id}')">restock</button>
+      <button class="btn btn-ghost btn-sm" onclick="openEditCounter('${c.id}')">edit</button>
+    </div>
+  </div>`;
+}
+
+function renderSchedule() {
+  const el = document.getElementById('view-schedule');
+  let html = `<div class="section-title">meal prep & staples</div><div class="schedule-grid">`;
+  scheduled.forEach(s => {
+    const status = scheduleStatus(s);
+    const days = Math.floor(scheduleDaysLeft(s));
+    const reorder = scheduleReorderDate(s);
+    const reorderStr = formatDateRelative(reorder);
+    const reorderClass = status === 'out' ? 'urgent' : (status === 'low' ? 'soon' : 'reorder');
+    const storeClass = 'store-' + s.store;
+    html += `<div class="schedule-card status-${status}">
+      <div class="schedule-name">${s.name}</div>
+      <div class="schedule-detail">${s.note || ''} <span class="store-badge ${storeClass}">${s.store}</span></div>
+      <div class="schedule-info">
+        <div class="info-block">
+          <div class="info-label">on hand</div>
+          <div class="info-val">${s.onHand} ${s.unit}</div>
+        </div>
+        <div class="info-block">
+          <div class="info-label">per week</div>
+          <div class="info-val">${s.amountPerWeek} ${s.unit}</div>
+        </div>
+        <div class="info-block">
+          <div class="info-label">days left</div>
+          <div class="info-val">${days > 0 ? days : 'out'}</div>
+        </div>
+        <div class="info-block">
+          <div class="info-label">reorder</div>
+          <div class="info-val ${reorderClass}">${reorderStr}</div>
+        </div>
+      </div>
+      <div class="schedule-actions">
+        <button class="btn btn-ghost btn-sm" onclick="adjustSchedule('${s.id}',-1)">use 1</button>
+        <button class="btn btn-ghost btn-sm" onclick="openRestockSchedule('${s.id}')">restock</button>
+        <button class="btn btn-ghost btn-sm" onclick="openEditSchedule('${s.id}')">edit</button>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  el.innerHTML = html;
+}
+
+function renderPantry() {
+  const el = document.getElementById('view-pantry');
+  const outCount = pantry.flatMap(c=>c.items).filter(i=>!i.have).length;
+  let html = `<div style="display:flex;align-items:center;gap:12px;margin-bottom:1rem;">
+    <div class="section-title" style="margin-bottom:0">pantry flavors</div>
+    ${outCount > 0 ? `<span class="need-badge">${outCount} need restocking</span>` : ''}
+  </div>
+  <p style="font-size:13px;color:var(--text3);margin-bottom:1rem;font-family:'Indie Flower',cursive;">tap the toggle when you run out of something — riley will know what's available 🐺</p>
+  <div class="pantry-grid">`;
+  pantry.forEach((cat, ci) => {
+    html += `<div class="pantry-cat-title">${cat.cat}</div>`;
+    cat.items.forEach((item, ii) => {
+      html += `<div class="pantry-item ${!item.have?'out-of-stock':''}">
+        <span class="pantry-name ${!item.have?'out':''}">${item.name}</span>
+        ${!item.have ? `<span class="need-badge">need</span>` : ''}
+        <button class="toggle-btn ${item.have?'on':'off'}" onclick="togglePantry(${ci},${ii})"></button>
+      </div>`;
+    });
+  });
+  html += `</div>`;
+  el.innerHTML = html;
+}
+
+function renderUpcoming() {
+  const el = document.getElementById('view-upcoming');
+  const all = [
+    ...counters.map(c=>({name:c.name, date:counterReorderDate(c), store:c.store, type:'counter', status:counterStatus(c)})),
+    ...scheduled.map(s=>({name:s.name, date:scheduleReorderDate(s), store:s.store, type:'schedule', status:scheduleStatus(s)})),
+  ].sort((a,b)=>a.date-b.date);
+
+  let html = `<div class="section-title">upcoming reorders</div><div class="upcoming-list">`;
+  if (all.length === 0) {
+    html += `<div class="empty">nothing to track yet!</div>`;
+  } else {
+    all.forEach(item => {
+      const days = Math.round((item.date - new Date()) / 86400000);
+      const cls = days <= 0 ? 'urgent' : (days <= 3 ? 'soon' : '');
+      const storeClass = 'store-' + item.store;
+      html += `<div class="upcoming-item">
+        <div class="upcoming-date ${cls}">${formatDateFull(item.date)}</div>
+        <div style="flex:1">
+          <div class="upcoming-name">${item.name}</div>
+          <div class="upcoming-detail"><span class="store-badge ${storeClass}">${item.store}</span></div>
+        </div>
+        ${item.status !== 'ok' ? `<span class="need-badge">${item.status}</span>` : ''}
+      </div>`;
+    });
+  }
+  html += `</div>`;
+  el.innerHTML = html;
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────────────────────
+function adjustFlavor(cid, fi, delta) {
+  const c = counters.find(x=>x.id===cid);
+  if (!c) return;
+  c.flavors[fi].count = Math.max(0, c.flavors[fi].count + delta);
+  save('cp_counters', counters);
+  renderAll();
+}
+
+function restockCounter(cid) {
+  const c = counters.find(x=>x.id===cid);
+  if (!c) return;
+  c.flavors.forEach(f=>f.count=f.max);
+  save('cp_counters', counters);
+  renderAll();
+}
+
+function adjustSchedule(sid, delta) {
+  const s = scheduled.find(x=>x.id===sid);
+  if (!s) return;
+  s.onHand = Math.max(0, s.onHand + delta);
+  save('cp_scheduled', scheduled);
+  renderAll();
+}
+
+function togglePantry(ci, ii) {
+  pantry[ci].items[ii].have = !pantry[ci].items[ii].have;
+  save('cp_pantry', pantry);
+  renderAll();
+}
+
+// ── MODALS ────────────────────────────────────────────────────────────────────
+function openModal(type) {
+  const modal = document.getElementById('modalBox');
+  let html = '';
+  if (type === 'counter') {
+    html = `<div class="modal-title">add counter item</div>
+    <div class="field"><label>name</label><input id="mn" placeholder="e.g. Chips"></div>
+    <div class="field-row">
+      <div class="field"><label>per day</label><input type="number" id="mpd" value="2" step="0.5" min="0.1"></div>
+      <div class="field"><label>store</label><select id="mstore"><option value="amazon">Amazon</option><option value="doordash">DoorDash</option><option value="meijer">Meijer</option></select></div>
+    </div>
+    <div class="field"><label>flavors / varieties (one per line: Name, Count, Max)</label>
+      <textarea id="mflavors" rows="4" placeholder="Nacho Doritos, 8, 8&#10;Cool Ranch, 6, 6"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">cancel</button>
+      <button class="btn btn-primary" onclick="saveNewCounter()">add</button>
+    </div>`;
+  } else if (type === 'schedule') {
+    html = `<div class="modal-title">add scheduled item</div>
+    <div class="field"><label>name</label><input id="mn" placeholder="e.g. Basmati Rice"></div>
+    <div class="field-row">
+      <div class="field"><label>unit</label><input id="munit" placeholder="cups, lbs, bags..."></div>
+      <div class="field"><label>store</label><select id="mstore"><option value="amazon">Amazon</option><option value="doordash">DoorDash</option><option value="meijer">Meijer</option></select></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>amount per week</label><input type="number" id="mapw" value="1" step="0.1" min="0.1"></div>
+      <div class="field"><label>currently on hand</label><input type="number" id="moh" value="1" step="0.1" min="0"></div>
+    </div>
+    <div class="field"><label>note (optional)</label><input id="mnote" placeholder="e.g. 3 cups = 7 meals"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">cancel</button>
+      <button class="btn btn-primary" onclick="saveNewSchedule()">add</button>
+    </div>`;
+  } else if (type === 'pantry') {
+    const catNames = pantry.map(c=>c.cat);
+    html = `<div class="modal-title">add pantry item</div>
+    <div class="field"><label>item name</label><input id="mn" placeholder="e.g. Sriracha"></div>
+    <div class="field"><label>category</label><select id="mcat">
+      ${catNames.map(c=>`<option>${c}</option>`).join('')}
+      <option value="__new">+ new category</option>
+    </select></div>
+    <div class="field" id="newCatField" style="display:none"><label>new category name</label><input id="mnewcat"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">cancel</button>
+      <button class="btn btn-primary" onclick="saveNewPantry()">add</button>
+    </div>`;
+  }
+  modal.innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('open');
+
+  const catSel = document.getElementById('mcat');
+  if (catSel) catSel.addEventListener('change', function() {
+    document.getElementById('newCatField').style.display = this.value === '__new' ? '' : 'none';
+  });
+}
+
+function openRestockSchedule(sid) {
+  const s = scheduled.find(x=>x.id===sid);
+  if (!s) return;
+  const modal = document.getElementById('modalBox');
+  modal.innerHTML = `<div class="modal-title">restock — ${s.name}</div>
+    <div class="field"><label>new amount on hand (${s.unit})</label><input type="number" id="mroh" value="${s.onHand}" step="0.5" min="0"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">cancel</button>
+      <button class="btn btn-primary" onclick="confirmRestockSchedule('${sid}')">save</button>
+    </div>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function confirmRestockSchedule(sid) {
+  const s = scheduled.find(x=>x.id===sid);
+  if (!s) return;
+  const val = parseFloat(document.getElementById('mroh').value);
+  if (!isNaN(val)) { s.onHand = val; save('cp_scheduled', scheduled); }
+  closeModal(); renderAll();
+}
+
+function openEditCounter(cid) {
+  const c = counters.find(x=>x.id===cid);
+  if (!c) return;
+  const modal = document.getElementById('modalBox');
+  modal.innerHTML = `<div class="modal-title">edit — ${c.name}</div>
+    <div class="field"><label>name</label><input id="mn" value="${c.name}"></div>
+    <div class="field-row">
+      <div class="field"><label>per day</label><input type="number" id="mpd" value="${c.perDay}" step="0.5" min="0.1"></div>
+      <div class="field"><label>store</label><select id="mstore">
+        <option value="amazon" ${c.store==='amazon'?'selected':''}>Amazon</option>
+        <option value="doordash" ${c.store==='doordash'?'selected':''}>DoorDash</option>
+        <option value="meijer" ${c.store==='meijer'?'selected':''}>Meijer</option>
+      </select></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">cancel</button>
+      <button class="btn btn-primary" onclick="saveEditCounter('${cid}')">save</button>
+    </div>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function openEditSchedule(sid) {
+  const s = scheduled.find(x=>x.id===sid);
+  if (!s) return;
+  const modal = document.getElementById('modalBox');
+  modal.innerHTML = `<div class="modal-title">edit — ${s.name}</div>
+    <div class="field"><label>name</label><input id="mn" value="${s.name}"></div>
+    <div class="field-row">
+      <div class="field"><label>unit</label><input id="munit" value="${s.unit}"></div>
+      <div class="field"><label>store</label><select id="mstore">
+        <option value="amazon" ${s.store==='amazon'?'selected':''}>Amazon</option>
+        <option value="doordash" ${s.store==='doordash'?'selected':''}>DoorDash</option>
+        <option value="meijer" ${s.store==='meijer'?'selected':''}>Meijer</option>
+      </select></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>per week</label><input type="number" id="mapw" value="${s.amountPerWeek}" step="0.1" min="0.1"></div>
+      <div class="field"><label>on hand</label><input type="number" id="moh" value="${s.onHand}" step="0.1" min="0"></div>
+    </div>
+    <div class="field"><label>note</label><input id="mnote" value="${s.note||''}"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">cancel</button>
+      <button class="btn btn-primary" onclick="saveEditSchedule('${sid}')">save</button>
+    </div>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function saveNewCounter() {
+  const name = document.getElementById('mn').value.trim();
+  if (!name) return;
+  const perDay = parseFloat(document.getElementById('mpd').value) || 1;
+  const store = document.getElementById('mstore').value;
+  const raw = document.getElementById('mflavors').value.trim();
+  const flavors = raw.split('\n').filter(l=>l.trim()).map(line => {
+    const parts = line.split(',').map(p=>p.trim());
+    return { name: parts[0]||'item', count: parseInt(parts[1])||1, max: parseInt(parts[2])||parseInt(parts[1])||1 };
+  });
+  if (flavors.length === 0) flavors.push({name, count:1, max:1});
+  counters.push({ id: uid(), name, store, perDay, flavors });
+  save('cp_counters', counters);
+  closeModal(); renderAll();
+}
+
+function saveNewSchedule() {
+  const name = document.getElementById('mn').value.trim();
+  if (!name) return;
+  scheduled.push({
+    id: uid(), name,
+    unit: document.getElementById('munit').value.trim() || 'units',
+    store: document.getElementById('mstore').value,
+    amountPerWeek: parseFloat(document.getElementById('mapw').value) || 1,
+    onHand: parseFloat(document.getElementById('moh').value) || 0,
+    note: document.getElementById('mnote').value.trim(),
+    lastOrdered: dateStr(0),
+  });
+  save('cp_scheduled', scheduled);
+  closeModal(); renderAll();
+}
+
+function saveNewPantry() {
+  const name = document.getElementById('mn').value.trim();
+  if (!name) return;
+  let catName = document.getElementById('mcat').value;
+  if (catName === '__new') catName = document.getElementById('mnewcat').value.trim() || 'Other';
+  let cat = pantry.find(c=>c.cat===catName);
+  if (!cat) { cat = {cat:catName, items:[]}; pantry.push(cat); }
+  cat.items.push({name, have:true});
+  save('cp_pantry', pantry);
+  closeModal(); renderAll();
+}
+
+function saveEditCounter(cid) {
+  const c = counters.find(x=>x.id===cid);
+  if (!c) return;
+  c.name = document.getElementById('mn').value.trim() || c.name;
+  c.perDay = parseFloat(document.getElementById('mpd').value) || c.perDay;
+  c.store = document.getElementById('mstore').value;
+  save('cp_counters', counters);
+  closeModal(); renderAll();
+}
+
+function saveEditSchedule(sid) {
+  const s = scheduled.find(x=>x.id===sid);
+  if (!s) return;
+  s.name = document.getElementById('mn').value.trim() || s.name;
+  s.unit = document.getElementById('munit').value.trim() || s.unit;
+  s.store = document.getElementById('mstore').value;
+  s.amountPerWeek = parseFloat(document.getElementById('mapw').value) || s.amountPerWeek;
+  s.onHand = parseFloat(document.getElementById('moh').value) ?? s.onHand;
+  s.note = document.getElementById('mnote').value.trim();
+  save('cp_scheduled', scheduled);
+  closeModal(); renderAll();
+}
+
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+document.getElementById('modalOverlay').addEventListener('click', function(e) { if(e.target===this) closeModal(); });
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+renderAll();
+setView('dashboard');
+</script>
+</body>
+</html>

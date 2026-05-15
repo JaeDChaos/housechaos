@@ -1,0 +1,233 @@
+
+<link href="https://fonts.googleapis.com/css2?family=Chewy&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .calc-wrapper { font-family: 'Nunito', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem 2.5rem; }
+  .calc-header { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 320px; margin-bottom: 1.25rem; }
+  .calc-title { font-family: 'Chewy', cursive; font-size: 28px; color: var(--title-color); letter-spacing: 1px; text-shadow: 0 1px 0 var(--title-shadow); transition: color 0.3s; }
+  .dark-toggle { font-family: 'Chewy', cursive; font-size: 13px; background: var(--toggle-bg); border: 1.5px solid var(--toggle-border); border-radius: 20px; padding: 4px 12px; color: var(--toggle-color); cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 0 var(--toggle-shadow); }
+  .dark-toggle:hover { opacity: 0.85; }
+  .dark-toggle:active { transform: translateY(1px); box-shadow: none; }
+  .calc-card { background: var(--card-bg); border-radius: 24px; padding: 1.25rem; width: 100%; max-width: 320px; border: 2px solid var(--card-border); box-shadow: 0 4px 0 var(--card-shadow); transition: background 0.3s, border-color 0.3s, box-shadow 0.3s; }
+  .display-area { background: var(--display-bg); border-radius: 16px; padding: 0.75rem 1rem 0.5rem; margin-bottom: 1rem; min-height: 96px; display: flex; flex-direction: column; justify-content: space-between; border: 1.5px solid var(--display-border); transition: background 0.3s; }
+  .display-flavor { font-family: 'Chewy', cursive; font-size: 13px; color: var(--flavor-color); min-height: 18px; letter-spacing: 0.5px; }
+  .display-expr { font-size: 13px; color: var(--expr-color); text-align: right; min-height: 18px; }
+  .display-main { font-family: 'Chewy', cursive; font-size: 40px; color: var(--main-color); text-align: right; letter-spacing: 1px; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .btn-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .btn { font-family: 'Chewy', cursive; font-size: 20px; border-radius: 12px; border: none; cursor: pointer; padding: 0; height: 58px; transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.2s; line-height: 1; outline: none; }
+  .btn:active { transform: scale(0.93) translateY(2px); box-shadow: none !important; }
+  .btn-num { background: var(--num-bg); color: var(--num-color); border: 1.5px solid var(--num-border); box-shadow: 0 3px 0 var(--num-shadow); }
+  .btn-num:hover { background: var(--num-hover); }
+  .btn-op { background: var(--op-bg); color: var(--op-color); border: 1.5px solid var(--op-border); box-shadow: 0 3px 0 var(--op-shadow); }
+  .btn-op:hover { background: var(--op-hover); }
+  .btn-eq { background: var(--eq-bg); color: var(--eq-color); border: 1.5px solid var(--eq-border); box-shadow: 0 3px 0 var(--eq-shadow); }
+  .btn-eq:hover { background: var(--eq-hover); }
+  .btn-clear { background: var(--cl-bg); color: var(--cl-color); border: 1.5px solid var(--cl-border); box-shadow: 0 3px 0 var(--cl-shadow); }
+  .btn-clear:hover { background: var(--cl-hover); }
+  .btn-wide { grid-column: span 2; }
+
+  .light-vars {
+    --title-color: #7c4f8a; --title-shadow: #e8c6f0;
+    --toggle-bg: #f5e0ff; --toggle-border: #c98fe0; --toggle-color: #5a2d6e; --toggle-shadow: #b870c8;
+    --card-bg: #fdf6ff; --card-border: #e2b8f0; --card-shadow: #c98fe0;
+    --display-bg: #2d1b3d; --display-border: #4a2a60;
+    --flavor-color: #b07fd0; --expr-color: #8a6aa0; --main-color: #f0dcff;
+    --num-bg: #fff0ff; --num-color: #5a2d6e; --num-border: #dda8f0; --num-shadow: #c98fe0; --num-hover: #f5e0ff;
+    --op-bg: #e8c6f5; --op-color: #5a2d6e; --op-border: #c98fe0; --op-shadow: #a86bc0; --op-hover: #ddb8ee;
+    --eq-bg: #7c4f8a; --eq-color: #fdf0ff; --eq-border: #5a2d6e; --eq-shadow: #3d1a50; --eq-hover: #6b4078;
+    --cl-bg: #f5d0f0; --cl-color: #7a1a6a; --cl-border: #d898cc; --cl-shadow: #b870a8; --cl-hover: #eabee8;
+  }
+  .dark-vars {
+    --title-color: #d4a0f0; --title-shadow: #3d1a50;
+    --toggle-bg: #2a1040; --toggle-border: #6a3a88; --toggle-color: #d4a0f0; --toggle-shadow: #1a0828;
+    --card-bg: #1a0d2e; --card-border: #4a2a68; --card-shadow: #0e0618;
+    --display-bg: #0d0618; --display-border: #3a1a58;
+    --flavor-color: #9060b8; --expr-color: #6a4888; --main-color: #e8c8ff;
+    --num-bg: #2a1245; --num-color: #ddb8ff; --num-border: #5a3078; --num-shadow: #120820; --num-hover: #351658;
+    --op-bg: #3d1a60; --op-color: #e0b8ff; --op-border: #6a3a90; --op-shadow: #1a0830; --op-hover: #4a2270;
+    --eq-bg: #8a5aa0; --eq-color: #fff0ff; --eq-border: #6a3a88; --eq-shadow: #2d1050; --eq-hover: #9a6ab0;
+    --cl-bg: #3a1050; --cl-color: #e8a8e0; --cl-border: #6a2888; --cl-shadow: #180628; --cl-hover: #481268;
+  }
+</style>
+
+<div class="calc-wrapper light-vars" id="app">
+  <div class="calc-header">
+    <div class="calc-title">ChaosCalculator 🧮</div>
+    <button class="dark-toggle" id="toggleBtn" onclick="toggleDark()">🌙 dark</button>
+  </div>
+  <div class="calc-card">
+    <div class="display-area">
+      <div class="display-flavor" id="flavor"></div>
+      <div class="display-expr" id="expr"></div>
+      <div class="display-main" id="display">0</div>
+    </div>
+    <div class="btn-grid">
+      <button class="btn btn-clear" onclick="pressAC()">AC</button>
+      <button class="btn btn-op" onclick="pressSign()">+/-</button>
+      <button class="btn btn-op" onclick="pressPct()">%</button>
+      <button class="btn btn-op" onclick="pressOp('÷')">÷</button>
+      <button class="btn btn-num" onclick="pressNum('7')">7</button>
+      <button class="btn btn-num" onclick="pressNum('8')">8</button>
+      <button class="btn btn-num" onclick="pressNum('9')">9</button>
+      <button class="btn btn-op" onclick="pressOp('×')">×</button>
+      <button class="btn btn-num" onclick="pressNum('4')">4</button>
+      <button class="btn btn-num" onclick="pressNum('5')">5</button>
+      <button class="btn btn-num" onclick="pressNum('6')">6</button>
+      <button class="btn btn-op" onclick="pressOp('−')">−</button>
+      <button class="btn btn-num" onclick="pressNum('1')">1</button>
+      <button class="btn btn-num" onclick="pressNum('2')">2</button>
+      <button class="btn btn-num" onclick="pressNum('3')">3</button>
+      <button class="btn btn-op" onclick="pressOp('+')">+</button>
+      <button class="btn btn-num btn-wide" onclick="pressNum('0')">0</button>
+      <button class="btn btn-num" onclick="pressDot()">.</button>
+      <button class="btn btn-eq" onclick="pressEq()">=</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let current = '0', prev = null, op = null, fresh = false, hasDecimal = false, isDark = false;
+  let pressCount = 0;
+
+  const flavors = {
+    idle: ["cozy math time 🧶", "what are we calculating?", "ready when you are ✨", "math but make it cute", "numbers go brrr 🦁", "hello. press things.", "chaos awaits your input"],
+    op: ["oooh operation!", "carry the chaos", "math is happening", "ooh fancy", "combining things~", "hold that thought...", "okay and then?"],
+    eq: ["and there it is!", "math: defeated", "Vlad approves", "CORRECT (probably)", "did Riley eat first?",
+      "chaos computed!", "the numbers have spoken", "lava lamp math complete", "Ptolemy counted too", "Mumble checked the math 🐧",
+      "KC is unimpressed", "Gem looked it up", "House Chaos approves", "flawless chaos", "SLAY",
+      "Riley would've done this in his head", "Vlad has seen worse math", "correct! probably.",
+      "that's a number alright", "science!", "mathed successfully"],
+    zero: ["dividing by zero? in THIS house?", "bestie no", "that's illegal here", "even chaos has limits", "NOT TODAY",
+      "the void stares back", "mathematically rude", "Mumble said absolutely not 🐧"],
+    clear: ["fresh slate ✨", "clean chaos incoming", "poof! gone.", "starting over, no judgment", "tabula rasa, cozy edition",
+      "wiped. cleansed. renewed.", "it never happened", "what numbers", "Vlad saw nothing"],
+    pct: ["ooh going proportional", "percent mode activated", "very financial of you", "fancy fraction energy",
+      "dividing by 100 like a pro", "Gem approves of this precision", "a percentage! in THIS economy?",
+      "very adult of you", "calculating your chaos budget"],
+    sign: ["plot twist!", "now it's negative. dramatic.", "flipped it and reversed it",
+      "the number went emo", "villain arc activated", "turned that frown upside down... wait",
+      "mathematical mood swing", "Vlad energy: negative", "it's giving opposite day"],
+    dot: ["getting decimal up in here", "precision mode: on", "ah, a fraction person",
+      "decimal detected. fancy.", "we live in a society with decimal points",
+      "Gem respects this level of detail", "fractional chaos incoming",
+      "Riley would just round it", "the dot that changes everything"],
+    nums: {
+      '0': ["a whole lotta nothing", "zero is valid", "the void, but make it math"],
+      '1': ["the loneliest number", "one! singular sensation", "it begins"],
+      '2': ["it takes two!", "a pair. a duo. a couple.", "binary vibes"],
+      '3': ["three's company", "triangle energy", "Riley, Jae, and chaos walk into a bar"],
+      '4': ["four on the floor", "a stable number. very KC.", "four legs good"],
+      '5': ["high five!", "halfway to ten", "five by five"],
+      '6': ["six is just upside-down 9", "the number of legs on a beetle 🪲", "hexagonal energy"],
+      '7': ["lucky seven!", "Vlad's favorite (probably)", "seventh son of a seventh son"],
+      '8': ["eight! great!", "sideways infinity", "octopus math"],
+      '9': ["nein!", "almost ten", "cloud nine achieved"]
+    }
+  };
+
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function maybeNumFlav(n) {
+    if (Math.random() < 0.2) return pick(flavors.nums[n]);
+    return null;
+  }
+
+  function toggleDark() {
+    isDark = !isDark;
+    document.getElementById('app').className = 'calc-wrapper ' + (isDark ? 'dark-vars' : 'light-vars');
+    document.getElementById('toggleBtn').textContent = isDark ? '☀️ light' : '🌙 dark';
+  }
+
+  function setDisplay(val, flav, expr) {
+    let disp = String(val);
+    if (disp.length > 11) disp = parseFloat(val).toExponential(4);
+    document.getElementById('display').textContent = disp;
+    if (flav !== undefined && flav !== null) document.getElementById('flavor').textContent = flav;
+    if (expr !== undefined) document.getElementById('expr').textContent = expr;
+  }
+
+  function pressNum(n) {
+    if (fresh) { current = n; hasDecimal = false; fresh = false; }
+    else if (current === '0' && n !== '.') current = n;
+    else if (current.length < 12) current += n;
+    const flav = maybeNumFlav(n);
+    setDisplay(current, flav);
+  }
+
+  function pressDot() {
+    if (fresh) { current = '0.'; hasDecimal = true; fresh = false; setDisplay(current, pick(flavors.dot)); return; }
+    if (!hasDecimal) { current += '.'; hasDecimal = true; setDisplay(current, pick(flavors.dot)); }
+  }
+
+  function pressOp(o) {
+    if (op && !fresh) {
+      const r = calculate(); if (r === null) return;
+      prev = r; setDisplay(fmt(r), pick(flavors.op), fmt(r) + ' ' + o);
+    } else {
+      prev = parseFloat(current);
+      setDisplay(current, pick(flavors.op), fmt(prev) + ' ' + o);
+    }
+    op = o; fresh = true; hasDecimal = false;
+  }
+
+  function calculate() {
+    const a = prev, b = parseFloat(current);
+    if (op === '+') return a + b;
+    if (op === '−') return a - b;
+    if (op === '×') return a * b;
+    if (op === '÷') {
+      if (b === 0) { setDisplay('nope', pick(flavors.zero), ''); op = null; prev = null; current = '0'; fresh = false; return null; }
+      return a / b;
+    }
+  }
+
+  function fmt(n) {
+    if (n === null || n === undefined) return '0';
+    const s = parseFloat(n.toPrecision(10)).toString();
+    return s.length > 12 ? parseFloat(n).toExponential(4) : s;
+  }
+
+  function pressEq() {
+    if (!op || prev === null) return;
+    const exprStr = fmt(prev) + ' ' + op + ' ' + current;
+    const r = calculate(); if (r === null) return;
+    current = fmt(r);
+    setDisplay(current, pick(flavors.eq), exprStr + ' =');
+    op = null; prev = null; fresh = true; hasDecimal = current.includes('.');
+  }
+
+  function pressAC() {
+    current = '0'; prev = null; op = null; fresh = false; hasDecimal = false;
+    setDisplay('0', pick(flavors.clear), '');
+  }
+
+  function pressSign() {
+    if (parseFloat(current) === 0) return;
+    current = (parseFloat(current) * -1).toString();
+    hasDecimal = current.includes('.');
+    setDisplay(current, pick(flavors.sign));
+  }
+
+  function pressPct() {
+    current = (parseFloat(current) / 100).toString();
+    hasDecimal = current.includes('.');
+    setDisplay(current, pick(flavors.pct));
+  }
+
+  window.addEventListener('keydown', function(e) {
+    if (e.key >= '0' && e.key <= '9') pressNum(e.key);
+    else if (e.key === '.') pressDot();
+    else if (e.key === '+') pressOp('+');
+    else if (e.key === '-') pressOp('−');
+    else if (e.key === '*') pressOp('×');
+    else if (e.key === '/') { e.preventDefault(); pressOp('÷'); }
+    else if (e.key === 'Enter' || e.key === '=') pressEq();
+    else if (e.key === 'Backspace') {
+      if (current.length > 1) { current = current.slice(0,-1); hasDecimal = current.includes('.'); setDisplay(current); }
+      else { current = '0'; hasDecimal = false; setDisplay(current); }
+    }
+    else if (e.key === 'Escape') pressAC();
+  });
+
+  setDisplay('0', pick(flavors.idle), '');
+</script>

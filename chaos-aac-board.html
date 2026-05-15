@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦁 Chaos Board</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦁</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Chewy&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dusty-rose: #C4748A; --warm-gold: #D4A843;
+    --felt-dark: #1A1025; --felt-mid: #241535;
+    --yarn-pink: #E8A0B4; --yarn-blue: #7BBDD4;
+    --yarn-green: #7DC4A0; --yarn-orange: #E8B87A;
+    --text-main: #F0E8FF; --text-soft: #C4B8D8; --text-muted: #8A7AA0;
+    --shadow: rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Patrick Hand', cursive; background: var(--felt-dark);
+    color: var(--text-main); min-height: 100vh; overflow-x: hidden;
+    background-image: radial-gradient(ellipse at 20% 20%, rgba(45,27,78,0.8) 0%, transparent 60%),
+                      radial-gradient(ellipse at 80% 80%, rgba(139,26,43,0.4) 0%, transparent 60%);
+  }
+
+  /* HEADER */
+  .header { display:flex; align-items:center; justify-content:space-between; padding:14px 20px 10px;
+    background:rgba(26,16,37,0.9); border-bottom:2px solid rgba(107,78,138,0.4);
+    position:sticky; top:0; z-index:100; backdrop-filter:blur(8px); }
+  .header-title { font-family:'Chewy',cursive; font-size:1.6rem; color:var(--warm-gold); letter-spacing:1px; text-shadow:0 0 20px rgba(212,168,67,0.4); }
+  .header-subtitle { font-size:0.8rem; color:var(--text-muted); margin-top:1px; }
+  .pop-out-btn { background:rgba(107,78,138,0.3); border:1.5px solid rgba(107,78,138,0.6); color:var(--text-soft);
+    padding:6px 14px; border-radius:20px; cursor:pointer; font-family:'Patrick Hand',cursive; font-size:0.85rem; transition:all 0.2s; }
+  .pop-out-btn:hover { background:rgba(107,78,138,0.5); color:var(--text-main); transform:translateY(-1px); }
+
+  /* TABS */
+  .tab-nav { display:flex; gap:8px; padding:12px 20px 0; background:rgba(26,16,37,0.6); }
+  .tab-btn { font-family:'Chewy',cursive; font-size:1rem; padding:8px 20px; border-radius:16px 16px 0 0;
+    border:1.5px solid rgba(107,78,138,0.3); border-bottom:none; background:rgba(36,21,53,0.6);
+    color:var(--text-muted); cursor:pointer; transition:all 0.2s; letter-spacing:0.5px; }
+  .tab-btn.active { background:var(--felt-mid); color:var(--warm-gold); border-color:rgba(107,78,138,0.6); text-shadow:0 0 12px rgba(212,168,67,0.3); }
+  .tab-btn:hover:not(.active) { color:var(--text-soft); background:rgba(36,21,53,0.8); }
+
+  /* MAIN */
+  .main { padding:20px; max-width:900px; margin:0 auto; }
+  .tab-panel { display:none; }
+  .tab-panel.active { display:block; animation:fadeIn 0.25s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+  /* TRAY */
+  .message-tray { background:rgba(36,21,53,0.8); border:1.5px solid rgba(107,78,138,0.4); border-radius:16px; padding:14px 16px; margin-bottom:16px; min-height:60px; }
+  .tray-label { font-size:0.75rem; color:var(--text-muted); margin-bottom:6px; letter-spacing:0.5px; text-transform:uppercase; }
+  .tray-content { font-size:1rem; color:var(--text-main); line-height:1.5; min-height:28px; word-break:break-word; white-space:pre-wrap; }
+  .tray-content.empty { color:var(--text-muted); font-style:italic; font-size:0.9rem; }
+  .tray-actions { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .tray-btn { font-family:'Patrick Hand',cursive; font-size:0.85rem; padding:5px 14px; border-radius:12px; border:1.5px solid; cursor:pointer; transition:all 0.15s; }
+  .btn-copy { background:rgba(212,168,67,0.15); border-color:rgba(212,168,67,0.5); color:var(--warm-gold); }
+  .btn-copy:hover { background:rgba(212,168,67,0.25); transform:translateY(-1px); }
+  .btn-copy.copied { background:rgba(125,196,160,0.2); border-color:var(--yarn-green); color:var(--yarn-green); }
+  .btn-clear { background:rgba(139,26,43,0.15); border-color:rgba(139,26,43,0.4); color:var(--dusty-rose); }
+  .btn-clear:hover { background:rgba(139,26,43,0.25); transform:translateY(-1px); }
+
+  /* EDIT MODE BAR */
+  .edit-mode-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;
+    padding:7px 14px; background:rgba(212,168,67,0.06); border:1.5px dashed rgba(212,168,67,0.25); border-radius:14px; transition:all 0.2s; }
+  .edit-mode-bar.active { background:rgba(212,168,67,0.1); border-color:rgba(212,168,67,0.45); }
+  .edit-mode-label { font-size:0.8rem; color:var(--text-muted); font-style:italic; }
+  .edit-mode-bar.active .edit-mode-label { color:var(--warm-gold); font-style:normal; }
+  .edit-toggle-btn { font-family:'Patrick Hand',cursive; font-size:0.8rem; padding:4px 13px;
+    border-radius:13px; border:1.5px solid rgba(212,168,67,0.4); background:rgba(212,168,67,0.08);
+    color:var(--warm-gold); cursor:pointer; transition:all 0.15s; }
+  .edit-toggle-btn:hover, .edit-toggle-btn.on { background:rgba(212,168,67,0.2); border-color:rgba(212,168,67,0.7); }
+
+  /* CATEGORIES */
+  .category { margin-bottom:22px; }
+  .category-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .category-label { font-family:'Chewy',cursive; font-size:1.05rem; color:var(--dusty-rose); letter-spacing:0.5px;
+    display:flex; align-items:center; gap:6px; flex:1; }
+  .category-label::after { content:''; flex:1; height:1px; background:rgba(196,116,138,0.25); border-radius:1px; }
+  .cat-edit-btns { display:none; gap:6px; margin-left:10px; flex-shrink:0; }
+  .edit-mode-on .cat-edit-btns { display:flex; }
+  .cat-action-btn { font-family:'Patrick Hand',cursive; font-size:0.72rem; padding:2px 9px;
+    border-radius:11px; border:1px solid; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+  .cat-add-btn { background:rgba(125,196,160,0.1); border-color:rgba(125,196,160,0.4); color:var(--yarn-green); }
+  .cat-add-btn:hover { background:rgba(125,196,160,0.22); }
+  .cat-rename-btn { background:rgba(107,78,138,0.1); border-color:rgba(107,78,138,0.4); color:#C4A8E8; }
+  .cat-rename-btn:hover { background:rgba(107,78,138,0.22); }
+  .cat-delete-cat-btn { background:rgba(139,26,43,0.1); border-color:rgba(139,26,43,0.35); color:var(--dusty-rose); }
+  .cat-delete-cat-btn:hover { background:rgba(139,26,43,0.22); }
+
+  /* AAC BUTTONS */
+  .btn-grid { display:flex; flex-wrap:wrap; gap:8px; }
+  .aac-btn-wrap { position:relative; display:inline-flex; }
+  .aac-btn { font-family:'Patrick Hand',cursive; font-size:0.92rem; padding:8px 16px;
+    border-radius:22px; border:1.5px solid; cursor:pointer; transition:all 0.18s; letter-spacing:0.2px; line-height:1.3; }
+  .aac-btn.selected { transform:translateY(-2px); box-shadow:0 4px 16px var(--shadow); }
+  .aac-btn:hover { transform:translateY(-1px); box-shadow:0 3px 10px var(--shadow); }
+
+  .btn-purple { background:rgba(107,78,138,0.2); border-color:rgba(107,78,138,0.5); color:#C4A8E8; }
+  .btn-purple.selected,.btn-purple:hover { background:rgba(107,78,138,0.4); border-color:rgba(107,78,138,0.8); }
+  .btn-rose { background:rgba(196,116,138,0.2); border-color:rgba(196,116,138,0.5); color:var(--yarn-pink); }
+  .btn-rose.selected,.btn-rose:hover { background:rgba(196,116,138,0.35); border-color:rgba(196,116,138,0.8); }
+  .btn-blue { background:rgba(123,189,212,0.15); border-color:rgba(123,189,212,0.4); color:var(--yarn-blue); }
+  .btn-blue.selected,.btn-blue:hover { background:rgba(123,189,212,0.28); border-color:rgba(123,189,212,0.7); }
+  .btn-gold { background:rgba(212,168,67,0.15); border-color:rgba(212,168,67,0.4); color:var(--warm-gold); }
+  .btn-gold.selected,.btn-gold:hover { background:rgba(212,168,67,0.28); border-color:rgba(212,168,67,0.7); }
+  .btn-green { background:rgba(125,196,160,0.15); border-color:rgba(125,196,160,0.4); color:var(--yarn-green); }
+  .btn-green.selected,.btn-green:hover { background:rgba(125,196,160,0.28); border-color:rgba(125,196,160,0.7); }
+  .btn-orange { background:rgba(232,184,122,0.15); border-color:rgba(232,184,122,0.4); color:var(--yarn-orange); }
+  .btn-orange.selected,.btn-orange:hover { background:rgba(232,184,122,0.28); border-color:rgba(232,184,122,0.7); }
+
+  /* EDIT OVERLAYS */
+  .btn-edit-overlay { display:none; position:absolute; top:-6px; right:-6px; gap:3px; z-index:10; }
+  .edit-mode-on .btn-edit-overlay { display:flex; }
+  .overlay-btn { width:18px; height:18px; border-radius:50%; border:1px solid; cursor:pointer;
+    font-size:0.58rem; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
+  .overlay-edit { background:rgba(107,78,138,0.7); border-color:rgba(107,78,138,1); color:#fff; }
+  .overlay-edit:hover { background:rgba(107,78,138,1); transform:scale(1.2); }
+  .overlay-delete { background:rgba(139,26,43,0.7); border-color:rgba(139,26,43,1); color:#fff; }
+  .overlay-delete:hover { background:rgba(139,26,43,1); transform:scale(1.2); }
+
+  /* ADD BUTTON ROW */
+  .add-btn-row { display:none; gap:7px; margin-top:8px; align-items:center; flex-wrap:wrap; }
+  .add-btn-row.open { display:flex; }
+  .add-btn-input { font-family:'Patrick Hand',cursive; font-size:0.88rem; padding:5px 12px;
+    border-radius:16px; border:1.5px solid rgba(107,78,138,0.5); background:rgba(26,16,37,0.7);
+    color:var(--text-main); outline:none; flex:1; min-width:160px; }
+  .add-btn-input:focus { border-color:rgba(107,78,138,0.8); }
+  .add-btn-confirm { font-family:'Patrick Hand',cursive; font-size:0.82rem; padding:5px 12px;
+    border-radius:14px; border:1.5px solid rgba(125,196,160,0.5); background:rgba(125,196,160,0.12);
+    color:var(--yarn-green); cursor:pointer; transition:all 0.15s; }
+  .add-btn-confirm:hover { background:rgba(125,196,160,0.25); }
+  .add-btn-cancel { font-family:'Patrick Hand',cursive; font-size:0.82rem; padding:5px 10px;
+    border-radius:14px; border:1px solid rgba(139,26,43,0.3); background:transparent;
+    color:var(--text-muted); cursor:pointer; transition:all 0.15s; }
+  .add-btn-cancel:hover { color:var(--dusty-rose); }
+
+  /* ADD CATEGORY BUTTON */
+  .add-category-btn { width:100%; font-family:'Patrick Hand',cursive; font-size:0.88rem; padding:8px;
+    border-radius:14px; border:1.5px dashed rgba(125,196,160,0.4); background:rgba(125,196,160,0.07);
+    color:var(--yarn-green); cursor:pointer; transition:all 0.2s; display:none; margin-top:4px; }
+  .edit-mode-on .add-category-btn { display:block; }
+  .add-category-btn:hover { background:rgba(125,196,160,0.15); border-style:solid; }
+
+  /* SUB OPTIONS */
+  .sub-options { display:none; margin-top:8px; margin-left:12px; padding:10px 12px;
+    background:rgba(26,16,37,0.6); border-left:2px solid rgba(107,78,138,0.4);
+    border-radius:0 12px 12px 0; flex-wrap:wrap; gap:7px; }
+  .sub-options.open { display:flex; }
+  .sub-hint { width:100%; font-size:0.75rem; color:var(--text-muted); margin-bottom:4px; font-style:italic; }
+  .sub-btn { font-family:'Patrick Hand',cursive; font-size:0.82rem; padding:5px 13px;
+    border-radius:16px; border:1px solid rgba(107,78,138,0.4); background:rgba(107,78,138,0.15);
+    color:var(--text-soft); cursor:pointer; transition:all 0.15s; }
+  .sub-btn:hover { background:rgba(107,78,138,0.3); border-color:rgba(107,78,138,0.7); color:var(--text-main); transform:translateY(-1px); }
+  .send-as-options-btn { font-family:'Patrick Hand',cursive; font-size:0.78rem; padding:4px 11px;
+    border-radius:14px; border:1px dashed rgba(196,116,138,0.5); background:transparent;
+    color:var(--dusty-rose); cursor:pointer; transition:all 0.15s; font-style:italic; }
+  .send-as-options-btn:hover { background:rgba(196,116,138,0.1); border-style:solid; }
+
+  /* DECISIONS */
+  .decisions-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; margin-bottom:20px; }
+  .decision-card { background:rgba(36,21,53,0.7); border:1.5px solid rgba(107,78,138,0.3); border-radius:16px; padding:14px 16px; transition:border-color 0.2s; }
+  .decision-card:hover { border-color:rgba(107,78,138,0.5); }
+  .decision-card-title { font-family:'Chewy',cursive; font-size:1rem; color:var(--warm-gold); margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+  .decision-items { font-size:0.85rem; color:var(--text-soft); line-height:1.7; white-space:pre-wrap; word-break:break-word; }
+  .decision-card-actions { display:flex; gap:7px; margin-top:10px; flex-wrap:wrap; }
+  .dec-btn { font-family:'Patrick Hand',cursive; font-size:0.8rem; padding:4px 12px; border-radius:14px; border:1.5px solid; cursor:pointer; transition:all 0.15s; }
+  .dec-btn-pick { background:rgba(212,168,67,0.15); border-color:rgba(212,168,67,0.4); color:var(--warm-gold); }
+  .dec-btn-pick:hover { background:rgba(212,168,67,0.28); transform:translateY(-1px); }
+  .dec-btn-edit { background:rgba(107,78,138,0.15); border-color:rgba(107,78,138,0.4); color:var(--text-soft); }
+  .dec-btn-edit:hover { background:rgba(107,78,138,0.28); transform:translateY(-1px); }
+  .pick-all-btn { width:100%; font-family:'Chewy',cursive; font-size:1.1rem; padding:12px; border-radius:16px;
+    border:2px solid rgba(212,168,67,0.5); background:rgba(212,168,67,0.12); color:var(--warm-gold);
+    cursor:pointer; transition:all 0.2s; letter-spacing:0.5px; margin-bottom:14px; }
+  .pick-all-btn:hover { background:rgba(212,168,67,0.22); transform:translateY(-2px); box-shadow:0 4px 20px rgba(212,168,67,0.2); }
+
+  /* MODAL */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(10,5,20,0.85); z-index:200; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--felt-mid); border:1.5px solid rgba(107,78,138,0.5); border-radius:20px; padding:24px;
+    width:min(500px,90vw); max-height:80vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.6); animation:popIn 0.2s ease; }
+  @keyframes popIn { from{transform:scale(0.93);opacity:0} to{transform:scale(1);opacity:1} }
+  .modal-title { font-family:'Chewy',cursive; font-size:1.2rem; color:var(--warm-gold); margin-bottom:8px; }
+  .modal-hint { font-size:0.8rem; color:var(--text-muted); margin-bottom:14px; line-height:1.5; }
+  .modal textarea, .modal input[type="text"] { width:100%; background:rgba(26,16,37,0.8); border:1.5px solid rgba(107,78,138,0.4);
+    border-radius:12px; color:var(--text-main); font-family:'Patrick Hand',cursive; font-size:0.9rem; padding:12px; outline:none; line-height:1.6; }
+  .modal textarea { resize:vertical; min-height:160px; }
+  .modal input[type="text"]:focus, .modal textarea:focus { border-color:rgba(107,78,138,0.7); }
+  .modal-actions { display:flex; gap:10px; margin-top:14px; justify-content:flex-end; }
+  .modal-save { font-family:'Patrick Hand',cursive; font-size:0.9rem; padding:7px 20px; border-radius:14px; border:1.5px solid rgba(212,168,67,0.5); background:rgba(212,168,67,0.15); color:var(--warm-gold); cursor:pointer; transition:all 0.15s; }
+  .modal-save:hover { background:rgba(212,168,67,0.28); }
+  .modal-cancel { font-family:'Patrick Hand',cursive; font-size:0.9rem; padding:7px 20px; border-radius:14px; border:1.5px solid rgba(107,78,138,0.3); background:transparent; color:var(--text-muted); cursor:pointer; transition:all 0.15s; }
+  .modal-cancel:hover { color:var(--text-soft); border-color:rgba(107,78,138,0.5); }
+
+  /* CONFIRM TOAST */
+  .confirm-toast { display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--felt-mid); border:1.5px solid rgba(139,26,43,0.5); border-radius:16px; padding:14px 22px;
+    z-index:300; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,0.5); min-width:260px; }
+  .confirm-toast.open { display:block; }
+  .toast-msg { font-size:0.9rem; color:var(--text-soft); margin-bottom:10px; }
+  .toast-actions { display:flex; gap:10px; justify-content:center; }
+  .toast-yes { font-family:'Patrick Hand',cursive; font-size:0.85rem; padding:5px 16px; border-radius:12px; border:1.5px solid rgba(139,26,43,0.5); background:rgba(139,26,43,0.2); color:var(--dusty-rose); cursor:pointer; transition:all 0.15s; }
+  .toast-yes:hover { background:rgba(139,26,43,0.35); }
+  .toast-no { font-family:'Patrick Hand',cursive; font-size:0.85rem; padding:5px 16px; border-radius:12px; border:1.5px solid rgba(107,78,138,0.4); background:transparent; color:var(--text-muted); cursor:pointer; transition:all 0.15s; }
+  .toast-no:hover { color:var(--text-main); }
+
+  ::-webkit-scrollbar { width:6px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:rgba(107,78,138,0.4); border-radius:3px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">🦁 Chaos Board</div>
+    <div class="header-subtitle">you've got this, one button at a time</div>
+  </div>
+  <button class="pop-out-btn" onclick="popOut()">⧉ Open in own window</button>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('board',this)">💬 Say Something</button>
+  <button class="tab-btn" onclick="switchTab('decisions',this)">🎀 Morning Decisions</button>
+</div>
+
+<div class="main">
+
+  <div id="tab-board" class="tab-panel active">
+    <div class="message-tray">
+      <div class="tray-label">📋 your message</div>
+      <div class="tray-content empty" id="tray-display">tap buttons below to build your message...</div>
+      <div class="tray-actions">
+        <button class="tray-btn btn-copy" id="copy-btn" onclick="copyMessage()">📋 copy</button>
+        <button class="tray-btn btn-clear" onclick="clearMessage()">✕ clear all</button>
+      </div>
+    </div>
+    <div class="edit-mode-bar" id="edit-mode-bar">
+      <span class="edit-mode-label" id="edit-mode-label">want to add or change buttons?</span>
+      <button class="edit-toggle-btn" id="edit-toggle-btn" onclick="toggleEditMode()">✏️ edit board</button>
+    </div>
+    <div id="aac-categories"></div>
+    <button class="add-category-btn" id="add-cat-btn" onclick="promptNewCategory()">+ add new category</button>
+  </div>
+
+  <div id="tab-decisions" class="tab-panel">
+    <div class="message-tray">
+      <div class="tray-label">📋 decisions output</div>
+      <div class="tray-content empty" id="dec-tray-display">use the buttons below to get options to send to Riley, Gem, or Claude...</div>
+      <div class="tray-actions">
+        <button class="tray-btn btn-copy" id="dec-copy-btn" onclick="copyDecisions()">📋 copy</button>
+        <button class="tray-btn btn-clear" onclick="clearDecisions()">✕ clear</button>
+      </div>
+    </div>
+    <button class="pick-all-btn" onclick="pickAll()">🎀 help me pick everything today</button>
+    <div class="decisions-grid" id="decisions-grid"></div>
+  </div>
+
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="edit-btn-modal">
+  <div class="modal">
+    <div class="modal-title">✏️ edit button</div>
+    <div class="modal-hint">change what this button says and adds to your message.</div>
+    <input type="text" id="edit-btn-input" placeholder="button text...">
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal('edit-btn-modal')">cancel</button>
+      <button class="modal-save" onclick="saveEditBtn()">save 💾</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="new-cat-modal">
+  <div class="modal">
+    <div class="modal-title">✨ new category</div>
+    <div class="modal-hint">give it a name — you can add buttons to it right after! emoji at the start works great 🌙</div>
+    <input type="text" id="new-cat-input" placeholder="e.g. 🌙 late night or 🎮 fun stuff...">
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal('new-cat-modal')">cancel</button>
+      <button class="modal-save" onclick="saveNewCategory()">add it 🌿</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="rename-cat-modal">
+  <div class="modal">
+    <div class="modal-title">✏️ rename category</div>
+    <div class="modal-hint">change the category name.</div>
+    <input type="text" id="rename-cat-input" placeholder="category name...">
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal('rename-cat-modal')">cancel</button>
+      <button class="modal-save" onclick="saveRenameCategory()">save 💾</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="dec-edit-modal">
+  <div class="modal">
+    <div class="modal-title" id="dec-modal-title">edit options</div>
+    <div class="modal-hint">one item per line. changes save to your browser and stay between sessions. 💜</div>
+    <textarea id="dec-modal-textarea"></textarea>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal('dec-edit-modal')">cancel</button>
+      <button class="modal-save" onclick="saveDecModal()">save 💾</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-toast" id="confirm-toast">
+  <div class="toast-msg" id="toast-msg">are you sure?</div>
+  <div class="toast-actions">
+    <button class="toast-no" onclick="closeToast()">nope, keep it</button>
+    <button class="toast-yes" onclick="confirmAction()">yes, remove it</button>
+  </div>
+</div>
+
+<script>
+const CAT_COLORS = ['btn-purple','btn-rose','btn-blue','btn-orange','btn-green','btn-gold'];
+
+const DEFAULT_AAC = [
+  { id:'im-here', label:"🌙 I'm here", color:'btn-purple', buttons:["I'm here, just quiet 🌙","I'm okay, just need a minute","thinking... give me a sec","I just wanted to be near you","I'm awake","just woke up 💤"], sub:null },
+  { id:'needs', label:"🧸 needs", color:'btn-rose', buttons:["I need comfort right now","I need distraction","can we just exist together?","I need someone to pick for me","I need a nap 💤","can you check on me?"],
+    sub:{ trigger:"I need distraction", hint:"pick one — or send without picking to share all options 💜", options:["help me find something to do","tell me a story","try to start a conversation"], allText:"I need distraction — options: help me find something to do / tell me a story / try to start a conversation" } },
+  { id:'feelings', label:"💜 feelings & body", color:'btn-blue', buttons:["overwhelmed but okay","overwhelmed and not okay","brainfog day 🌫️","wall mode 🧱","feeling little 🧸","really tired but don't want to be alone"], sub:null },
+  { id:'lupus', label:"🔥 lupusy feels", color:'btn-orange', buttons:["running hot 🔥","feeling sick 🤢","nauseous","flare day 😔","spoons are low","really tired, need a nap 💤","sun sensitivity flaring"], sub:null },
+  { id:'love', label:"💙 love signals", color:'btn-gold', buttons:["I love you","you're doing really good","thank you for being here","just wanted you to know I'm thinking of you","I'm proud of you","🖤","💙"], sub:null }
+];
+
+const DEFAULT_DECISIONS = {
+  bow:{ emoji:'🎀', title:'Bow', items:['Pink bow with Bingo','Yellow bow with Bluey and Bingo','Blue and green bow with Bluey, Bingo, and the Heeler house','Light blue bow with Bluey','Orange bow with meditating Bluey and the meditation gnome','Bright yellow bow with Bluey, Bingo, and Muffin','Blue bow with leaves and Bluey','Green bow with Bluey holding Christmas present','Green bow with Bluey and Bartlebee','Blue bow with Bluey wearing reindeer antlers','Red bow with Bingo wearing reindeer antlers','Tan bow with Bingo holding candy cane','Crimson bow with Bluey and Bingo in sweaters','Navy blue bow with Bluey and Bingo wearing antlers','Solid color — just say the color and size (small for pigtails, big for one bow!)'] },
+  nubbin:{ emoji:'👍', title:'Nubbin', items:['Scorch 🐉 — pink dragon print with bones and pinwheels clip','Foxy 🦊 — white baby-princess-fox-with-stars-and-crowns print with purple-bat/star/"bad"/heart clip','"Daddy" 🖤 — black with white heart print, "Daddy" text in red, with B/A/B/Y/baby bottle/bow clip'] },
+  food:{ emoji:'🍚', title:'Food Flavor', items:["CONDIMENTS: Duke's mayo, Homemade honey mustard, Yellow mustard, Dijon mustard, Ketchup, Crystal hot sauce, Worcestershire sauce, Soy sauce, Country Crock butter, Garlic herb compound butter","ACIDS: Lemon juice, Lime juice, Red wine vinegar, Balsamic vinegar, Apple cider vinegar","ASIAN & SPECIALTY: Gochujang, Sweet onion teriyaki, Teriyaki sauce, Orange sauce, Honey sesame sauce, Medium buffalo sauce, Raspberry chipotle sauce, Chipotle in adobo","FLAVOR BUILDERS: Better than Bouillon (Chili, Smoky Chipotle, Italian Herb, Chicken, Beef, Veggie), Kimchi","DAIRY: Pepper jack cheese, Cheddar cheese, Parmesan cheese","SWEETENERS: Honey, Brown sugar","SPICES: Thyme, Sage, Paprika, Cayenne, Salt, Pepper, Cinnamon, Nutmeg, Cloves, Curry powder"] },
+  chips:{ emoji:'🍘', title:'Chips', items:['Harvest Cheddar','Pretzels','Sour Cream & Chive','Puffy Cheetos','Crunchy Cheetos','Nacho Doritos','Cool Ranch Doritos','White Cheddar Popcorn','Ritz Bits','Goldfish Crackers'] },
+  cookies:{ emoji:'🍪', title:'Cookies', items:['Animal Crackers','Teddy Grahams','Oreo Minis','Chips Ahoy! Minis','Nutter Butter Bites'] },
+  gatorade:{ emoji:'🧃', title:'Gatorade', items:['Fruit Punch','Lemon Lime','Orange'] },
+  nebula:{ emoji:'🌌', title:'Nebula Lights (Hugo Orion)', items:['Rainbow 🌈','Red 🔴','Green 🟢','Blue 🔵','Green & Red','Blue & Green','Red & Blue','Alternating cycle ✨'] }
+};
+
+let messageParts = [], decisionOutput = [], editModeOn = false;
+let aacData = [], decisions = {};
+let pendingAction = null, editingBtnInfo = null, editingDecKey = null, renamingCatId = null;
+
+function loadData() {
+  try { const s = localStorage.getItem('chaos-aac-v2'); aacData = s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_AAC)); }
+  catch(e) { aacData = JSON.parse(JSON.stringify(DEFAULT_AAC)); }
+  try {
+    const s = localStorage.getItem('chaos-decisions'); decisions = s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_DECISIONS));
+    if (!decisions.nebula) { decisions.nebula = JSON.parse(JSON.stringify(DEFAULT_DECISIONS.nebula)); saveDecisions(); }
+  } catch(e) { decisions = JSON.parse(JSON.stringify(DEFAULT_DECISIONS)); }
+}
+function saveAac() { localStorage.setItem('chaos-aac-v2', JSON.stringify(aacData)); }
+function saveDecisions() { localStorage.setItem('chaos-decisions', JSON.stringify(decisions)); }
+
+loadData();
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+function popOut() {
+  const w = window.open('','_blank','width=720,height=700,resizable=yes,scrollbars=yes');
+  w.document.write(document.documentElement.outerHTML); w.document.close();
+}
+
+function toggleEditMode() {
+  editModeOn = !editModeOn;
+  document.getElementById('edit-mode-bar').classList.toggle('active', editModeOn);
+  const btn = document.getElementById('edit-toggle-btn');
+  btn.classList.toggle('on', editModeOn);
+  btn.textContent = editModeOn ? '✓ done editing' : '✏️ edit board';
+  document.getElementById('edit-mode-label').textContent = editModeOn ? '✏️ edit mode — tap ✎ to edit, ✕ to remove' : 'want to add or change buttons?';
+  const cats = document.getElementById('aac-categories');
+  cats.classList.toggle('edit-mode-on', editModeOn);
+  document.getElementById('add-cat-btn').style.display = editModeOn ? 'block' : 'none';
+  document.querySelectorAll('.add-btn-row.open').forEach(r => r.classList.remove('open'));
+}
+
+function renderAac() {
+  const container = document.getElementById('aac-categories');
+  container.innerHTML = '';
+  aacData.forEach((cat, catIdx) => {
+    const color = cat.color || CAT_COLORS[catIdx % CAT_COLORS.length];
+    const catEl = document.createElement('div');
+    catEl.className = 'category';
+
+    const header = document.createElement('div');
+    header.className = 'category-header';
+    header.innerHTML = `
+      <div class="category-label">${cat.label}</div>
+      <div class="cat-edit-btns">
+        <button class="cat-action-btn cat-add-btn" onclick="openAddBtnRow('${cat.id}')">+ button</button>
+        <button class="cat-action-btn cat-rename-btn" onclick="promptRenameCategory('${cat.id}')">rename</button>
+        <button class="cat-action-btn cat-delete-cat-btn" onclick="promptDeleteCategory('${cat.id}')">remove</button>
+      </div>`;
+    catEl.appendChild(header);
+
+    const grid = document.createElement('div');
+    grid.className = 'btn-grid';
+    cat.buttons.forEach((text, idx) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'aac-btn-wrap';
+      const isSub = cat.sub && cat.sub.trigger === text;
+      const btn = document.createElement('button');
+      btn.className = `aac-btn ${color}`;
+      btn.textContent = text;
+      btn.onclick = () => isSub ? toggleSub(cat.id) : addPart(btn, text);
+      const overlay = document.createElement('div');
+      overlay.className = 'btn-edit-overlay';
+      const safeText = text.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      overlay.innerHTML = `<button class="overlay-btn overlay-edit" onclick="promptEditBtn('${cat.id}',${idx})" title="edit">✎</button><button class="overlay-btn overlay-delete" onclick="promptDeleteBtn('${cat.id}',${idx},'${safeText}')" title="remove">✕</button>`;
+      wrap.appendChild(btn); wrap.appendChild(overlay); grid.appendChild(wrap);
+    });
+    catEl.appendChild(grid);
+
+    if (cat.sub) {
+      const subDiv = document.createElement('div');
+      subDiv.className = 'sub-options'; subDiv.id = `sub-${cat.id}`;
+      subDiv.innerHTML = `<div class="sub-hint">${cat.sub.hint}</div>`;
+      cat.sub.options.forEach(opt => {
+        const sb = document.createElement('button'); sb.className = 'sub-btn'; sb.textContent = opt;
+        sb.onclick = () => chooseSubOption(cat.id, `${cat.sub.trigger} — ${opt}`);
+        subDiv.appendChild(sb);
+      });
+      const sa = document.createElement('button'); sa.className = 'send-as-options-btn'; sa.textContent = 'send as options list ↗';
+      sa.onclick = () => chooseSubOption(cat.id, cat.sub.allText); subDiv.appendChild(sa);
+      catEl.appendChild(subDiv);
+    }
+
+    const addRow = document.createElement('div');
+    addRow.className = 'add-btn-row'; addRow.id = `add-row-${cat.id}`;
+    addRow.innerHTML = `<input class="add-btn-input" id="add-input-${cat.id}" type="text" placeholder="new button text..."><button class="add-btn-confirm" onclick="confirmAddBtn('${cat.id}')">add ✓</button><button class="add-btn-cancel" onclick="closeAddBtnRow('${cat.id}')">cancel</button>`;
+    catEl.appendChild(addRow);
+    container.appendChild(catEl);
+  });
+
+  if (editModeOn) { container.classList.add('edit-mode-on'); document.getElementById('add-cat-btn').style.display = 'block'; }
+
+  // rebind enter keys for add rows
+  aacData.forEach(cat => {
+    const inp = document.getElementById(`add-input-${cat.id}`);
+    if (inp) inp.addEventListener('keydown', e => { if(e.key==='Enter') confirmAddBtn(cat.id); });
+  });
+}
+
+function addPart(btn, text) {
+  if (editModeOn) return;
+  const idx = messageParts.indexOf(text);
+  if (idx > -1) { messageParts.splice(idx,1); btn.classList.remove('selected'); }
+  else { messageParts.push(text); btn.classList.add('selected'); }
+  updateTray();
+}
+
+function toggleSub(catId) {
+  if (editModeOn) return;
+  const sub = document.getElementById(`sub-${catId}`);
+  const wasOpen = sub.classList.contains('open');
+  document.querySelectorAll('.sub-options.open').forEach(s => s.classList.remove('open'));
+  if (!wasOpen) sub.classList.add('open');
+}
+
+function chooseSubOption(catId, text) {
+  document.getElementById(`sub-${catId}`).classList.remove('open');
+  const cat = aacData.find(c => c.id === catId);
+  if (cat && cat.sub) messageParts = messageParts.filter(p => !p.startsWith(cat.sub.trigger));
+  messageParts.push(text); updateTray();
+}
+
+function updateTray() {
+  const el = document.getElementById('tray-display');
+  if (!messageParts.length) { el.textContent='tap buttons below to build your message...'; el.className='tray-content empty'; }
+  else { el.textContent=messageParts.join(' · '); el.className='tray-content'; }
+}
+
+function copyMessage() {
+  if (!messageParts.length) return;
+  navigator.clipboard.writeText(messageParts.join(' · ')).then(() => {
+    const btn=document.getElementById('copy-btn'); btn.textContent='✓ copied!'; btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='📋 copy'; btn.classList.remove('copied'); },2000);
+  });
+}
+
+function clearMessage() {
+  messageParts=[];
+  document.querySelectorAll('.aac-btn.selected').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('.sub-options.open').forEach(s=>s.classList.remove('open'));
+  updateTray();
+}
+
+function openAddBtnRow(catId) {
+  document.querySelectorAll('.add-btn-row.open').forEach(r=>r.classList.remove('open'));
+  document.getElementById(`add-row-${catId}`).classList.add('open');
+  setTimeout(()=>document.getElementById(`add-input-${catId}`).focus(),50);
+}
+function closeAddBtnRow(catId) {
+  document.getElementById(`add-row-${catId}`).classList.remove('open');
+  document.getElementById(`add-input-${catId}`).value='';
+}
+function confirmAddBtn(catId) {
+  const inp=document.getElementById(`add-input-${catId}`); const text=inp.value.trim(); if(!text) return;
+  const cat=aacData.find(c=>c.id===catId); if(cat){ cat.buttons.push(text); saveAac(); renderAac(); openAddBtnRow(catId); }
+}
+
+function promptEditBtn(catId, btnIdx) {
+  const cat=aacData.find(c=>c.id===catId); if(!cat) return;
+  editingBtnInfo={catId,btnIdx}; document.getElementById('edit-btn-input').value=cat.buttons[btnIdx];
+  openModal('edit-btn-modal'); setTimeout(()=>document.getElementById('edit-btn-input').focus(),100);
+}
+function saveEditBtn() {
+  if(!editingBtnInfo) return; const text=document.getElementById('edit-btn-input').value.trim(); if(!text) return;
+  const cat=aacData.find(c=>c.id===editingBtnInfo.catId);
+  if(cat){ cat.buttons[editingBtnInfo.btnIdx]=text; saveAac(); renderAac(); }
+  closeModal('edit-btn-modal'); editingBtnInfo=null;
+}
+
+function promptDeleteBtn(catId, btnIdx, btnText) {
+  pendingAction=()=>{ const cat=aacData.find(c=>c.id===catId); if(cat){ cat.buttons.splice(btnIdx,1); saveAac(); renderAac(); } };
+  document.getElementById('toast-msg').textContent=`remove "${btnText}"?`;
+  document.getElementById('confirm-toast').classList.add('open');
+}
+
+function promptNewCategory() { openModal('new-cat-modal'); setTimeout(()=>document.getElementById('new-cat-input').focus(),100); }
+function saveNewCategory() {
+  const name=document.getElementById('new-cat-input').value.trim(); if(!name) return;
+  const id='cat-'+Date.now(); aacData.push({id,label:name,color:CAT_COLORS[aacData.length%CAT_COLORS.length],buttons:[],sub:null});
+  saveAac(); renderAac(); document.getElementById('new-cat-input').value=''; closeModal('new-cat-modal');
+}
+
+function promptRenameCategory(catId) {
+  const cat=aacData.find(c=>c.id===catId); if(!cat) return;
+  renamingCatId=catId; document.getElementById('rename-cat-input').value=cat.label;
+  openModal('rename-cat-modal'); setTimeout(()=>document.getElementById('rename-cat-input').focus(),100);
+}
+function saveRenameCategory() {
+  const name=document.getElementById('rename-cat-input').value.trim(); if(!name||!renamingCatId) return;
+  const cat=aacData.find(c=>c.id===renamingCatId); if(cat){ cat.label=name; saveAac(); renderAac(); }
+  renamingCatId=null; closeModal('rename-cat-modal');
+}
+
+function promptDeleteCategory(catId) {
+  const cat=aacData.find(c=>c.id===catId);
+  pendingAction=()=>{ aacData=aacData.filter(c=>c.id!==catId); saveAac(); renderAac(); };
+  document.getElementById('toast-msg').textContent=`remove the whole "${cat?cat.label:''}" category?`;
+  document.getElementById('confirm-toast').classList.add('open');
+}
+
+function confirmAction() { if(pendingAction) pendingAction(); pendingAction=null; closeToast(); }
+function closeToast() { document.getElementById('confirm-toast').classList.remove('open'); pendingAction=null; }
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m=>{ m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open'); }); });
+
+document.getElementById('edit-btn-input').addEventListener('keydown',e=>{ if(e.key==='Enter') saveEditBtn(); });
+document.getElementById('new-cat-input').addEventListener('keydown',e=>{ if(e.key==='Enter') saveNewCategory(); });
+document.getElementById('rename-cat-input').addEventListener('keydown',e=>{ if(e.key==='Enter') saveRenameCategory(); });
+
+function renderDecisions() {
+  const grid=document.getElementById('decisions-grid'); grid.innerHTML='';
+  Object.entries(decisions).forEach(([key,cat])=>{
+    const card=document.createElement('div'); card.className='decision-card';
+    card.innerHTML=`<div class="decision-card-title">${cat.emoji} ${cat.title}</div><div class="decision-items">${cat.items.map((it,i)=>`${i+1}. ${it}`).join('\n')}</div><div class="decision-card-actions"><button class="dec-btn dec-btn-pick" onclick="sendCategory('${key}')">help me pick 🎀</button><button class="dec-btn dec-btn-edit" onclick="openDecEdit('${key}')">edit ✏️</button></div>`;
+    grid.appendChild(card);
+  });
+}
+
+function sendCategory(key) {
+  const cat=decisions[key];
+  appendDecOutput(`🎀 ${cat.title} options for today:\n${cat.items.map((it,i)=>`${i+1}. ${it}`).join('\n')}\n\n(can you help me pick? 🥺)`);
+}
+function pickAll() {
+  let text=`🎀 Morning decisions — help me pick! 🥺\n\n`;
+  Object.values(decisions).forEach(cat=>{ text+=`${cat.emoji} ${cat.title}:\n${cat.items.map((it,i)=>`${i+1}. ${it}`).join('\n')}\n\n`; });
+  text+=`(one from each category please! 💜)`; setDecOutput(text);
+}
+function setDecOutput(text) { decisionOutput=[text]; const el=document.getElementById('dec-tray-display'); el.textContent=text; el.className='tray-content'; }
+function appendDecOutput(text) {
+  const el=document.getElementById('dec-tray-display');
+  if(!decisionOutput.length){ setDecOutput(text); return; }
+  decisionOutput.push(text); el.textContent=decisionOutput.join('\n\n---\n\n'); el.className='tray-content';
+}
+function copyDecisions() {
+  if(!decisionOutput.length) return;
+  navigator.clipboard.writeText(decisionOutput.join('\n\n---\n\n')).then(()=>{
+    const btn=document.getElementById('dec-copy-btn'); btn.textContent='✓ copied!'; btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='📋 copy'; btn.classList.remove('copied'); },2000);
+  });
+}
+function clearDecisions() { decisionOutput=[]; const el=document.getElementById('dec-tray-display'); el.textContent='use the buttons below to get options to send to Riley, Gem, or Claude...'; el.className='tray-content empty'; }
+function openDecEdit(key) {
+  editingDecKey=key; const cat=decisions[key];
+  document.getElementById('dec-modal-title').textContent=`edit ${cat.emoji} ${cat.title} options`;
+  document.getElementById('dec-modal-textarea').value=cat.items.join('\n'); openModal('dec-edit-modal');
+}
+function saveDecModal() {
+  if(!editingDecKey) return;
+  decisions[editingDecKey].items=document.getElementById('dec-modal-textarea').value.split('\n').map(l=>l.trim()).filter(l=>l);
+  saveDecisions(); renderDecisions(); closeModal('dec-edit-modal'); editingDecKey=null;
+}
+
+renderAac();
+renderDecisions();
+</script>
+</body>
+</html>
