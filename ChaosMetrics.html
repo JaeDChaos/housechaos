@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChaosMetrics 🦁</title>
+<link href="https://fonts.googleapis.com/css2?family=Chewy&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1a1025;
+    --bg2: #241630;
+    --bg3: #2e1d3d;
+    --card: #2a1a38;
+    --card2: #341f45;
+    --border: rgba(180,140,255,0.18);
+    --border2: rgba(180,140,255,0.32);
+    --text: #f0e8ff;
+    --text2: #c4aee8;
+    --text3: #9880c0;
+    --purple: #b57aff;
+    --purple2: #d4aaff;
+    --pink: #ff7ab8;
+    --teal: #5ae8c8;
+    --amber: #ffcc66;
+    --red: #ff6b6b;
+    --green: #7ee8a2;
+    --warn: #ffaa44;
+    --chaos: #ff4444;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+  body.light {
+    --bg: #f5f0ff;
+    --bg2: #ede4ff;
+    --bg3: #e4d6ff;
+    --card: #ffffff;
+    --card2: #f8f3ff;
+    --border: rgba(120,60,200,0.15);
+    --border2: rgba(120,60,200,0.28);
+    --text: #2a1a40;
+    --text2: #5a3a80;
+    --text3: #8060a8;
+    --purple: #7c3aed;
+    --purple2: #9d5cf5;
+    --pink: #d4187a;
+    --teal: #0d9068;
+    --amber: #b8860b;
+    --red: #cc2222;
+    --green: #1a7a44;
+    --warn: #c47a00;
+    --chaos: #cc0000;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px;
+    transition: background 0.3s, color 0.3s;
+  }
+  h1, h2, h3, .chewy { font-family: 'Chewy', cursive; letter-spacing: 0.03em; }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .title-block h1 {
+    font-size: 2.4rem;
+    color: var(--purple2);
+    line-height: 1;
+  }
+  .title-block p {
+    font-size: 0.85rem;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+  .header-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .month-badge {
+    font-family: 'Chewy', cursive;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 1rem;
+    color: var(--purple2);
+  }
+  .btn-mode {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Nunito', sans-serif;
+  }
+  .btn-mode:hover { background: var(--card2); color: var(--text); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  @media(max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: background 0.3s, border 0.3s;
+  }
+  .card-title {
+    font-size: 1.4rem;
+    color: var(--purple2);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .big-number {
+    font-family: 'Chewy', cursive;
+    font-size: 3rem;
+    line-height: 1;
+    color: var(--text);
+  }
+  .big-label {
+    font-size: 0.8rem;
+    color: var(--text3);
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .stat-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .stat-box {
+    background: var(--bg3);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .pct-display {
+    text-align: center;
+    margin-bottom: 18px;
+    padding: 14px;
+    background: var(--bg3);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .pct-display.warn { border-color: var(--warn); background: rgba(255,170,68,0.08); }
+  .pct-display.chaos-state { border-color: var(--chaos); background: rgba(255,68,68,0.1); animation: pulse-chaos 1.2s infinite; }
+  @keyframes pulse-chaos {
+    0%,100% { box-shadow: 0 0 0 0 rgba(255,68,68,0.3); }
+    50% { box-shadow: 0 0 0 6px rgba(255,68,68,0); }
+  }
+  .pct-big { font-family: 'Chewy', cursive; font-size: 2.8rem; }
+  .pct-fraction { font-size: 1rem; color: var(--text2); margin-top: 2px; }
+  .pct-msg { font-size: 0.8rem; margin-top: 6px; font-weight: 600; }
+  .pct-msg.ok { color: var(--green); }
+  .pct-msg.warn { color: var(--warn); }
+  .pct-msg.chaos-msg { color: var(--chaos); }
+
+  .progress-bar-wrap {
+    background: var(--bg3);
+    border-radius: 99px;
+    height: 10px;
+    margin-bottom: 18px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .progress-bar {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.5s cubic-bezier(.4,2,.6,1), background 0.3s;
+    min-width: 4px;
+  }
+  .progress-bar.ok { background: linear-gradient(90deg, var(--teal), var(--green)); }
+  .progress-bar.warn { background: linear-gradient(90deg, var(--amber), var(--warn)); }
+  .progress-bar.chaos-bar { background: linear-gradient(90deg, var(--pink), var(--chaos)); }
+  .progress-bar.pts { background: linear-gradient(90deg, var(--purple), var(--pink)); }
+
+  .btn-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .btn {
+    font-family: 'Chewy', cursive;
+    font-size: 1rem;
+    letter-spacing: 0.03em;
+    border: 1px solid var(--border2);
+    border-radius: 99px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.18s;
+    flex: 1;
+    min-width: 80px;
+    background: var(--bg3);
+    color: var(--text);
+  }
+  .btn:hover { transform: translateY(-1px); border-color: var(--purple); }
+  .btn:active { transform: scale(0.96); }
+  .btn.sched { border-color: var(--teal); color: var(--teal); }
+  .btn.sched:hover { background: rgba(90,232,200,0.12); }
+  .btn.kept { border-color: var(--green); color: var(--green); }
+  .btn.kept:hover { background: rgba(126,232,162,0.12); }
+  .btn.noshow { border-color: var(--red); color: var(--red); }
+  .btn.noshow:hover { background: rgba(255,107,107,0.12); }
+  .btn.recovered { border-color: var(--amber); color: var(--amber); }
+  .btn.recovered:hover { background: rgba(255,204,102,0.12); }
+  .btn.exempt { border-color: var(--text3); color: var(--text3); }
+  .btn.exempt:hover { background: rgba(152,128,192,0.12); }
+  .btn.addpt { border-color: var(--purple); color: var(--purple); font-size: 1.1rem; }
+  .btn.addpt:hover { background: rgba(181,122,255,0.12); }
+  .btn.undo { border-color: var(--pink); color: var(--pink); }
+  .btn.undo:hover { background: rgba(255,122,184,0.12); }
+  .btn.danger { border-color: var(--chaos); color: var(--chaos); }
+  .btn.danger:hover { background: rgba(255,68,68,0.12); }
+  .btn.export { border-color: var(--teal); color: var(--teal); }
+  .btn.export:hover { background: rgba(90,232,200,0.12); }
+  .btn.small { font-size: 0.8rem; padding: 5px 12px; min-width: 0; flex: none; }
+
+  .undo-hint { font-size: 0.75rem; color: var(--text3); min-height: 18px; margin-top: 2px; }
+
+  .lion-msg {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    color: var(--text2);
+    font-style: italic;
+    line-height: 1.5;
+    margin-top: 14px;
+    position: relative;
+  }
+  .lion-msg::before {
+    content: '🦁';
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    font-size: 1.2rem;
+  }
+
+  .pacing-block {
+    background: var(--bg3);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 0.88rem;
+    color: var(--text2);
+    margin-top: 12px;
+    line-height: 1.6;
+    border: 1px solid var(--border);
+  }
+  .pacing-block span { color: var(--purple2); font-weight: 700; }
+
+  .calendar-section { margin-top: 14px; }
+  .cal-header {
+    font-size: 0.8rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+  .cal-day-label {
+    text-align: center;
+    font-size: 0.68rem;
+    color: var(--text3);
+    padding-bottom: 2px;
+  }
+  .cal-day {
+    aspect-ratio: 1;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    cursor: pointer;
+    font-size: 0.72rem;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    user-select: none;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+  }
+  .cal-day:hover { border-color: var(--purple); color: var(--text); }
+  .cal-day.worked { background: rgba(181,122,255,0.45); border-color: var(--purple); color: var(--purple2); font-weight: 800; box-shadow: inset 0 0 0 1px rgba(181,122,255,0.4); }
+  .cal-day.today { border-color: var(--pink); }
+  .cal-day.other-month { opacity: 0.3; pointer-events: none; }
+  .cal-day.weekend { opacity: 0.5; }
+
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 14px 0;
+  }
+
+  .history-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-top: 20px;
+  }
+  .history-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .history-item {
+    background: var(--bg3);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    border: 1px solid var(--border);
+    font-size: 0.82rem;
+  }
+  .history-item .hi-month { font-family: 'Chewy', cursive; color: var(--purple2); font-size: 1rem; margin-bottom: 4px; }
+  .history-item .hi-stat { color: var(--text2); line-height: 1.6; }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--card2);
+    border: 1px solid var(--border2);
+    border-radius: 99px;
+    padding: 10px 24px;
+    font-size: 0.9rem;
+    color: var(--text);
+    transition: transform 0.3s cubic-bezier(.4,2,.6,1), opacity 0.3s;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 999;
+    font-family: 'Nunito', sans-serif;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  .field-guide {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-top: 20px;
+  }
+  .fg-title { font-size: 1.4rem; color: var(--purple2); margin-bottom: 14px; }
+  .fg-item {
+    border-left: 3px solid var(--purple);
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    background: var(--bg3);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  .fg-item strong { color: var(--purple2); }
+  .fg-item.teal { border-left-color: var(--teal); }
+  .fg-item.teal strong { color: var(--teal); }
+  .fg-item.amber { border-left-color: var(--amber); }
+  .fg-item.amber strong { color: var(--amber); }
+  .fg-item.red { border-left-color: var(--red); }
+  .fg-item.red strong { color: var(--red); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="title-block">
+    <h1>ChaosMetrics</h1>
+    <p>Work tracker · ChaosSuite</p>
+  </div>
+  <div class="header-controls">
+    <div class="month-badge" id="monthBadge"></div>
+    <button class="btn-mode" onclick="toggleMode()">☀️ Light mode</button>
+  </div>
+</div>
+
+<div class="grid">
+
+  <!-- PERCENTAGE TRACKER -->
+  <div class="card">
+    <div class="card-title">📊 Appointment Rate</div>
+
+    <div class="pct-display" id="pctDisplay">
+      <div class="pct-big" id="pctNum">—</div>
+      <div class="pct-fraction" id="pctFraction">No appointments yet</div>
+      <div class="pct-msg ok" id="pctMsg">Track your first appointment below</div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar ok" id="pctBar" style="width:0%"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn sched" onclick="pctAction('scheduled')">+ Scheduled</button>
+      <button class="btn kept" onclick="pctAction('kept')">✓ Kept</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn noshow" onclick="pctAction('noshow')">✗ No-show</button>
+      <button class="btn recovered" onclick="pctAction('recovered')">↩ Recovered</button>
+      <button class="btn exempt" onclick="pctAction('exempt')">◌ Exempt</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn undo small" onclick="pctUndo()">↺ Undo</button>
+    </div>
+    <div class="undo-hint" id="pctUndoHint"></div>
+
+    <hr class="section-divider">
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="big-number" id="statKept">0</div>
+        <div class="big-label">Kept</div>
+      </div>
+      <div class="stat-box">
+        <div class="big-number" id="statNoshow">0</div>
+        <div class="big-label">No-show</div>
+      </div>
+      <div class="stat-box">
+        <div class="big-number" id="statRecovered">0</div>
+        <div class="big-label">Recovered</div>
+      </div>
+      <div class="stat-box">
+        <div class="big-number" id="statExempt">0</div>
+        <div class="big-label">Exempt</div>
+      </div>
+    </div>
+
+    <div class="lion-msg" id="lionPct">Log your first appointment to get started! 📋</div>
+  </div>
+
+  <!-- POINTS TRACKER -->
+  <div class="card">
+    <div class="card-title">⭐ Points Tracker</div>
+
+    <div class="stat-row">
+      <div class="stat-box" style="flex:2">
+        <div class="big-number" id="ptsTotal">0</div>
+        <div class="big-label">Points earned</div>
+      </div>
+      <div class="stat-box" style="flex:2">
+        <div class="big-number" id="ptsRemain">100</div>
+        <div class="big-label">Remaining</div>
+      </div>
+      <div class="stat-box" style="flex:1">
+        <div class="big-number" id="ptsApps">0</div>
+        <div class="big-label">Apps</div>
+      </div>
+      <div class="stat-box" style="flex:1">
+        <div class="big-number" id="ptsAssess">0</div>
+        <div class="big-label">Assess</div>
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar pts" id="ptsBar" style="width:0%"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn addpt" onclick="ptsAction('app')">+ App</button>
+      <button class="btn addpt" onclick="ptsAction('assess')">+ Assessment</button>
+      <button class="btn undo" onclick="ptsUndo()">↺ Undo</button>
+    </div>
+    <div class="undo-hint" id="ptsUndoHint"></div>
+
+    <div class="pacing-block" id="pacingBlock">
+      Set up your work days below to see daily pacing 👇
+    </div>
+
+    <div class="calendar-section">
+      <div class="cal-header">
+        <span>Work days this month <span id="workedCount" style="color:var(--purple2)">0</span> days</span>
+        <button class="btn small" style="padding:3px 10px;font-size:0.75rem;" onclick="clearCalendar()">Clear</button>
+      </div>
+      <div class="cal-grid" id="calDayLabels"></div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="btn-row" style="margin-top:8px">
+        <button class="btn addpt small" onclick="addOTDay()">+ OT Day</button>
+        <span style="font-size:0.75rem;color:var(--text3);padding:6px 0">Tap dates you work · Add OT for extras</span>
+      </div>
+    </div>
+
+    <div class="lion-msg" id="lionPts">You've got this! Every point counts. 💜</div>
+  </div>
+</div>
+
+<!-- HISTORY + EXPORT -->
+<div class="history-card">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <h2 class="chewy" style="color:var(--purple2);font-size:1.4rem;">📅 Monthly History</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn export small" onclick="exportHistory()">⬇ Export CSV</button>
+      <button class="btn danger small" onclick="resetMonth()">↺ Reset Month</button>
+    </div>
+  </div>
+  <div class="history-grid" id="historyGrid">
+    <div style="color:var(--text3);font-size:0.85rem;padding:10px 0">No history yet — history saves automatically when you reset for a new month.</div>
+  </div>
+</div>
+
+<!-- FIELD GUIDE -->
+<div class="field-guide">
+  <div class="fg-title">📖 Edge Case Field Guide</div>
+  <div class="fg-item teal"><strong>Scheduled</strong> — Appointment booked to you in Zoho. Adds to your pool. Use this first every time.</div>
+  <div class="fg-item teal"><strong>Kept</strong> — Grad showed up, appointment completed by you. Earns a point AND counts toward your percentage. Best outcome.</div>
+  <div class="fg-item red"><strong>No-show / Needs Rescheduled</strong> — Grad didn't show, OR appointment still sitting unresolved. Both hit your negative status report and ding your percentage. Use this for either. Can become Recovered later if they reschedule back to you and keep it.</div>
+  <div class="fg-item amber"><strong>Recovered</strong> — A previous no-show got rescheduled back to YOU and was kept in the same month. Clears the percentage hit. Only use if the original was logged as No-show here first. Does NOT earn a point — just saves your percentage.</div>
+  <div class="fg-item"><strong>Exempt</strong> — Poof, gone, never counted. Use for: position closed · grad declined · WFH no-show · rescheduled to someone else (their name is on it now, not yours, so it won't appear in your report at all).</div>
+  <div class="fg-item amber"><strong>Rescheduled to someone else?</strong> — Hit Exempt. Your name leaves the record in Zoho, so it won't pull on your reports at all. You don't get the point, but it won't ding your percentage either.</div>
+  <div class="fg-item amber"><strong>Percentage math</strong> — Kept ÷ (Scheduled − Exempt). Recovered no-shows count as Kept. Need 85% or above to meet quota.</div>
+  <div class="fg-item"><strong>Points math</strong> — Apps + Assessments. 100 pts = quota met. You only earn points when YOU complete the appointment.</div>
+  <div class="fg-item teal"><strong>Can I meet quota two ways?</strong> — Yes! 100 pts OR 85% rate. You only need one, but both track here so you always know where you stand.</div>
+  <div class="fg-item red"><strong>Can I earn points AND percentage at the same time?</strong> — Yes! A kept appointment earns 1 point AND helps your percentage. Log Scheduled first, then Kept, then your point.</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const QUOTA = 100;
+const GOAL_PCT = 85;
+const WARN_PCT = 90;
+
+const LION_PCT_MSGS = {
+  empty: ["Log your first appointment to get started! 📋"],
+  chaos: [
+    "Okay, listen — we are NOT panicking. We're fixing. One kept appointment at a time. You got this. 🦁",
+    "Below 85% is temporary. You've handled harder things than this. Let's go. 💙",
+    "Hey. I see you working. It's going to come back up. Keep logging. 🖤"
+  ],
+  warn: [
+    "Getting close to that 85% line — just a heads up. No panic, just attention. 👀",
+    "We're watching this one. You're aware and that's already the important thing. 🦁",
+    "Little close for comfort but you've got time. Keep it up. 💜"
+  ],
+  ok: [
+    "Look at that number. That's all you, lil sis. 🦁",
+    "Solid. Steady. That's the energy. 💙",
+    "You're doing great. Every kept appointment is you doing your job well. 🖤",
+    "Above 85% AND tracking it? Overachiever behavior. I'm proud. 💜"
+  ]
+};
+
+const LION_PTS_MSGS = {
+  empty: ["You've got this! Every point counts. 💜"],
+  low: [
+    "Early in the month — plenty of runway. Let's build that number. 🦁",
+    "Every app and assessment gets you closer. One at a time. 💙",
+    "Starting to stack those points. Good. 🖤"
+  ],
+  mid: [
+    "Halfway there! You're on track, lil sis. 💜",
+    "Solid progress. Keep doing what you're doing. 🦁",
+    "Look at that number climbing. That's work. That's real. 💙"
+  ],
+  high: [
+    "Almost there!! I can feel the finish line from here. 🦁🎉",
+    "So close. Don't stop now. 💜",
+    "You're in the home stretch! Come on!! 💙🖤"
+  ],
+  done: [
+    "QUOTA HIT!! You did it!! I'm SO proud of you!! 🦁🎉💜",
+    "100 POINTS. DONE. That's my lil sis!! 🖤💙",
+    "FINISHED!! Go tell Riley. He should know. 🐺💜"
+  ],
+  behind: [
+    "You're a bit behind pace but you're not out. We recalculate, we keep going. 🦁",
+    "The numbers say catch-up mode, but I've seen you work — you've done it before. 💙",
+    "Behind pace is not behind forever. Let's go. 🖤"
+  ]
+};
+
+function randFrom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+let state = {
+  pct: { scheduled: 0, kept: 0, noshow: 0, recovered: 0, exempt: 0, history: [] },
+  pts: { apps: 0, assess: 0, history: [], workedDays: [] },
+  currentMonth: null
+};
+
+function getMonthKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+
+function getMonthLabel(key) {
+  const [y, m] = key.split('-');
+  return new Date(y, m-1, 1).toLocaleDateString('en-US', {month:'long', year:'numeric'});
+}
+
+function save() { localStorage.setItem('chaosMetrics_v2', JSON.stringify(state)); }
+
+function load() {
+  const raw = localStorage.getItem('chaosMetrics_v2');
+  if (raw) {
+    try { state = JSON.parse(raw); } catch(e) {}
+  }
+  const mk = getMonthKey();
+  if (!state.currentMonth) state.currentMonth = mk;
+  if (!state.pct.history) state.pct.history = [];
+  if (!state.pts.history) state.pts.history = [];
+  if (!state.pts.workedDays) state.pts.workedDays = [];
+}
+
+function calcPct() {
+  const p = state.pct;
+  const pool = p.scheduled - p.exempt;
+  if (pool <= 0) return null;
+  const kept = p.kept + p.recovered;
+  return { pct: (kept / pool) * 100, kept, pool };
+}
+
+function updatePctDisplay() {
+  const res = calcPct();
+  const display = document.getElementById('pctDisplay');
+  const num = document.getElementById('pctNum');
+  const frac = document.getElementById('pctFraction');
+  const msg = document.getElementById('pctMsg');
+  const bar = document.getElementById('pctBar');
+  const p = state.pct;
+
+  document.getElementById('statKept').textContent = p.kept;
+  document.getElementById('statNoshow').textContent = p.noshow - p.recovered;
+  document.getElementById('statRecovered').textContent = p.recovered;
+  document.getElementById('statExempt').textContent = p.exempt;
+
+  if (!res) {
+    num.textContent = '—';
+    frac.textContent = 'No countable appointments yet';
+    msg.textContent = 'Log a scheduled appointment to start';
+    msg.className = 'pct-msg ok';
+    display.className = 'pct-display';
+    bar.style.width = '0%';
+    bar.className = 'progress-bar ok';
+    document.getElementById('lionPct').textContent = randFrom(LION_PCT_MSGS.empty);
+    return;
+  }
+
+  const pctRound = Math.round(res.pct * 10) / 10;
+  num.textContent = pctRound + '%';
+  frac.textContent = `${res.kept} kept out of ${res.pool} countable`;
+  bar.style.width = Math.min(100, res.pct) + '%';
+
+  if (res.pct < GOAL_PCT) {
+    display.className = 'pct-display chaos-state';
+    bar.className = 'progress-bar chaos-bar';
+    msg.className = 'pct-msg chaos-msg';
+    msg.textContent = '⚠️ BELOW 85% — Chaos alert! Recover what you can!';
+    document.getElementById('lionPct').textContent = randFrom(LION_PCT_MSGS.chaos);
+  } else if (res.pct < WARN_PCT) {
+    display.className = 'pct-display warn';
+    bar.className = 'progress-bar warn';
+    msg.className = 'pct-msg warn';
+    msg.textContent = `⚡ Getting close to 85% — stay on it`;
+    document.getElementById('lionPct').textContent = randFrom(LION_PCT_MSGS.warn);
+  } else {
+    display.className = 'pct-display';
+    bar.className = 'progress-bar ok';
+    msg.className = 'pct-msg ok';
+    msg.textContent = `✓ Looking good! ${pctRound}% — above quota`;
+    document.getElementById('lionPct').textContent = randFrom(LION_PCT_MSGS.ok);
+  }
+}
+
+function pctAction(type) {
+  const p = state.pct;
+  let hint = '';
+  if (type === 'scheduled') { p.scheduled++; hint = 'Appointment added to pool'; }
+  else if (type === 'kept') {
+    if (p.scheduled - p.exempt <= p.kept + p.recovered) { showToast("Log a scheduled appointment first!"); return; }
+    p.kept++;
+    hint = 'Kept ✓';
+  }
+  else if (type === 'noshow') {
+    if (p.scheduled - p.exempt <= p.kept + p.noshow - p.recovered) { showToast("Log a scheduled appointment first!"); return; }
+    p.noshow++;
+    hint = 'No-show logged';
+  }
+  else if (type === 'recovered') {
+    const outstanding = p.noshow - p.recovered;
+    if (outstanding <= 0) { showToast("No no-shows to recover!"); return; }
+    p.recovered++;
+    hint = 'No-show recovered ↩';
+  }
+  else if (type === 'exempt') {
+    if (p.scheduled <= 0) { showToast("Nothing scheduled to exempt!"); return; }
+    p.scheduled--;
+    hint = 'Removed from pool ◌';
+  }
+  p.history.push(type);
+  document.getElementById('pctUndoHint').textContent = hint;
+  save(); updatePctDisplay();
+}
+
+function pctUndo() {
+  const h = state.pct.history;
+  if (!h.length) { showToast("Nothing to undo!"); return; }
+  const last = h.pop();
+  const p = state.pct;
+  if (last === 'scheduled') p.scheduled = Math.max(0, p.scheduled-1);
+  else if (last === 'kept') p.kept = Math.max(0, p.kept-1);
+  else if (last === 'noshow') p.noshow = Math.max(0, p.noshow-1);
+  else if (last === 'recovered') p.recovered = Math.max(0, p.recovered-1);
+  else if (last === 'exempt') p.scheduled++;
+  document.getElementById('pctUndoHint').textContent = `Undid: ${last}`;
+  save(); updatePctDisplay();
+}
+
+function updatePtsDisplay() {
+  const pts = state.pts;
+  const total = pts.apps + pts.assess;
+  const remain = Math.max(0, QUOTA - total);
+  const pct = Math.min(100, (total / QUOTA) * 100);
+
+  document.getElementById('ptsTotal').textContent = total;
+  document.getElementById('ptsRemain').textContent = remain;
+  document.getElementById('ptsApps').textContent = pts.apps;
+  document.getElementById('ptsAssess').textContent = pts.assess;
+  document.getElementById('ptsBar').style.width = pct + '%';
+
+  const worked = pts.workedDays.length;
+  document.getElementById('workedCount').textContent = worked;
+
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  const workedSoFar = pts.workedDays.filter(d => d <= todayStr).length;
+  const workedFuture = pts.workedDays.filter(d => d > todayStr).length;
+  const daysLeft = workedFuture;
+  const pacing = document.getElementById('pacingBlock');
+
+  if (worked === 0) {
+    pacing.innerHTML = 'Tap days you worked (or plan to work) on the calendar above to see pacing 👆';
+  } else if (remain === 0) {
+    pacing.innerHTML = '🎉 <span>Quota hit!</span> You\'re done for the month!';
+  } else if (daysLeft === 0) {
+    pacing.innerHTML = `<span>${remain}</span> pts left · No future work days logged — add more if needed`;
+  } else {
+    const perDay = Math.ceil(remain / daysLeft);
+    pacing.innerHTML = `<span>${remain}</span> pts left · <span>${daysLeft}</span> work days ahead · aim for <span>~${perDay}/day</span>`;
+  }
+
+  let lionKey = 'empty';
+  if (total === 0) lionKey = 'empty';
+  else if (total >= QUOTA) lionKey = 'done';
+  else {
+    const pctDone = total / QUOTA;
+    if (workedSoFar > 0 && daysLeft >= 0) {
+      const expectedByNow = workedSoFar > 0 ? (QUOTA / (worked || 1)) * workedSoFar : 0;
+      if (total < expectedByNow * 0.75) lionKey = 'behind';
+      else if (pctDone < 0.35) lionKey = 'low';
+      else if (pctDone < 0.7) lionKey = 'mid';
+      else lionKey = 'high';
+    } else {
+      if (pctDone < 0.35) lionKey = 'low';
+      else if (pctDone < 0.7) lionKey = 'mid';
+      else lionKey = 'high';
+    }
+  }
+  document.getElementById('lionPts').textContent = randFrom(LION_PTS_MSGS[lionKey]);
+}
+
+function ptsAction(type) {
+  if (type === 'app') { state.pts.apps++; state.pts.history.push('app'); document.getElementById('ptsUndoHint').textContent = '+1 App'; }
+  else if (type === 'assess') { state.pts.assess++; state.pts.history.push('assess'); document.getElementById('ptsUndoHint').textContent = '+1 Assessment'; }
+  save(); updatePtsDisplay();
+}
+
+function ptsUndo() {
+  const h = state.pts.history;
+  if (!h.length) { showToast("Nothing to undo!"); return; }
+  const last = h.pop();
+  if (last === 'app') state.pts.apps = Math.max(0, state.pts.apps-1);
+  else if (last === 'assess') state.pts.assess = Math.max(0, state.pts.assess-1);
+  document.getElementById('ptsUndoHint').textContent = `Undid: ${last}`;
+  save(); updatePtsDisplay();
+}
+
+function buildCalendar() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const todayStr = `${year}-${String(month+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+
+  const labels = document.getElementById('calDayLabels');
+  labels.innerHTML = '';
+  ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cal-day-label';
+    el.textContent = d;
+    labels.appendChild(el);
+  });
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  for (let i = 0; i < firstDay; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day other-month';
+    grid.appendChild(el);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const el = document.createElement('div');
+    const dow = new Date(year, month, d).getDay();
+    let cls = 'cal-day';
+    if (dow === 0 || dow === 6) cls += ' weekend';
+    if (dateStr === todayStr) cls += ' today';
+    if (state.pts.workedDays.includes(dateStr)) cls += ' worked';
+    el.className = cls;
+    el.textContent = d;
+    el.onclick = () => toggleDay(dateStr, el);
+    grid.appendChild(el);
+  }
+}
+
+function toggleDay(dateStr, el) {
+  const idx = state.pts.workedDays.indexOf(dateStr);
+  if (idx === -1) { state.pts.workedDays.push(dateStr); el.classList.add('worked'); }
+  else { state.pts.workedDays.splice(idx, 1); el.classList.remove('worked'); }
+  save(); updatePtsDisplay();
+}
+
+function addOTDay() {
+  const label = prompt('Enter OT date (YYYY-MM-DD):');
+  if (!label) return;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(label)) { showToast('Use format YYYY-MM-DD'); return; }
+  if (!state.pts.workedDays.includes(label)) {
+    state.pts.workedDays.push(label);
+    buildCalendar();
+    save(); updatePtsDisplay();
+    showToast('OT day added!');
+  } else { showToast('Already logged!'); }
+}
+
+function clearCalendar() {
+  if (!confirm('Clear all worked days?')) return;
+  state.pts.workedDays = [];
+  buildCalendar(); save(); updatePtsDisplay();
+}
+
+function resetMonth() {
+  if (!confirm('Save this month to history and reset for a new month?')) return;
+  const mk = getMonthKey();
+  const total = state.pts.apps + state.pts.assess;
+  const pctRes = calcPct();
+  const histEntry = {
+    month: mk,
+    pts: total,
+    apps: state.pts.apps,
+    assess: state.pts.assess,
+    pctKept: pctRes ? Math.round(pctRes.pct*10)/10 : null,
+    pctPool: pctRes ? pctRes.pool : 0
+  };
+  state.pct.history.push(histEntry);
+  state.pct = { scheduled:0, kept:0, noshow:0, recovered:0, exempt:0, history:[] };
+  state.pts = { apps:0, assess:0, history:[], workedDays:[] };
+  state.currentMonth = getMonthKey();
+  save(); buildCalendar(); updatePctDisplay(); updatePtsDisplay(); updateHistory();
+  showToast('Month saved! Fresh start 🎉');
+}
+
+function updateHistory() {
+  const grid = document.getElementById('historyGrid');
+  const history = state.pct.history.filter(h => h.month);
+  if (!history.length) {
+    grid.innerHTML = '<div style="color:var(--text3);font-size:0.85rem;padding:10px 0">No history yet — saves when you reset for a new month.</div>';
+    return;
+  }
+  grid.innerHTML = '';
+  [...history].reverse().forEach(h => {
+    const el = document.createElement('div');
+    el.className = 'history-item';
+    el.innerHTML = `<div class="hi-month">${getMonthLabel(h.month)}</div>
+    <div class="hi-stat">
+      ${h.pts}/${QUOTA} pts${h.pts >= QUOTA ? ' ✓' : ''}<br>
+      ${h.pctKept !== null ? h.pctKept+'% rate ('+h.pctPool+' appts)' : 'No % data'}
+    </div>`;
+    grid.appendChild(el);
+  });
+}
+
+function exportHistory() {
+  const history = state.pct.history.filter(h => h.month);
+  if (!history.length) { showToast('No history to export yet!'); return; }
+  const rows = [['Month','Points','Apps','Assessments','% Rate','Appt Pool']];
+  history.forEach(h => rows.push([getMonthLabel(h.month), h.pts, h.apps, h.assess, h.pctKept ?? 'N/A', h.pctPool]));
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv,' + encodeURIComponent(csv);
+  a.download = 'ChaosMetrics_history.csv';
+  a.click();
+  showToast('Exported!');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function toggleMode() {
+  const isLight = document.body.classList.toggle('light');
+  document.querySelector('.btn-mode').textContent = isLight ? '🌙 Dark mode' : '☀️ Light mode';
+  localStorage.setItem('chaosMetrics_theme', isLight ? 'light' : 'dark');
+}
+
+function init() {
+  load();
+  const savedTheme = localStorage.getItem('chaosMetrics_theme');
+  if (savedTheme === 'light') {
+    document.body.classList.add('light');
+    document.querySelector('.btn-mode').textContent = '🌙 Dark mode';
+  }
+  const mk = getMonthKey();
+  document.getElementById('monthBadge').textContent = getMonthLabel(mk);
+  buildCalendar();
+  updatePctDisplay();
+  updatePtsDisplay();
+  updateHistory();
+}
+
+init();
+</script>
+</body>
+</html>

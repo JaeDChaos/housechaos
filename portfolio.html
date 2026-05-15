@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Freelance Chaos — Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Patrick+Hand&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --crimson: #8b0000;
+      --crimson-bright: #c0392b;
+      --crimson-glow: #e74c3c;
+      --gold: #c9a84c;
+      --gold-light: #f0d080;
+      --black: #0a0a0a;
+      --dark: #111111;
+      --darker: #0d0d0d;
+      --card-bg: #161616;
+      --text: #f0ece4;
+      --text-dim: #c8bfb0;
+      --silver: #c0c0c0;
+      --border: rgba(139,0,0,0.35);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'Patrick Hand', cursive;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── STARFIELD ── */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 40% 8%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 30%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 55%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 85% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 15% 70%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 80%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 75%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 35% 90%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 78% 10%, rgba(200,160,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 5% 50%, rgba(200,160,255,0.3) 0%, transparent 100%);
+    }
+
+    /* ── NEBULA ACCENT ── */
+    .nebula {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 15% 20%, rgba(139,0,0,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 85% 70%, rgba(80,0,120,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(201,168,76,0.04) 0%, transparent 70%);
+    }
+
+    /* ── WRAPPER ── */
+    .portfolio-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 24px 120px;
+    }
+
+    /* ── HEADER ── */
+    .portfolio-header {
+      text-align: center;
+      margin-bottom: 80px;
+      animation: fadeDown 0.8s ease both;
+    }
+
+    .portfolio-header .eyebrow {
+      font-family: 'Patrick Hand', cursive;
+      font-size: 13px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+      opacity: 1;
+    }
+
+    .portfolio-header h1 {
+      font-family: 'Chewy', cursive;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      color: var(--crimson-glow);
+      text-shadow:
+        0 0 40px rgba(231,76,60,0.4),
+        0 0 80px rgba(139,0,0,0.2);
+      line-height: 1.1;
+      margin-bottom: 24px;
+      letter-spacing: 0.02em;
+    }
+
+    .portfolio-header .tagline {
+      font-family: 'Patrick Hand', cursive;
+      font-size: clamp(1rem, 2.2vw, 1.25rem);
+      color: var(--text);
+      max-width: 640px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+
+    .portfolio-header .tagline strong {
+      color: var(--gold-light);
+    }
+
+    .tagline-sub {
+      font-size: 0.95rem;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+
+    .header-divider {
+      width: 120px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--crimson-bright), transparent);
+      margin: 32px auto 0;
+    }
+
+    /* ── PROJECT CARDS ── */
+    .projects {
+      display: flex;
+      flex-direction: column;
+      gap: 80px;
+    }
+
+    .project-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 0.7s ease forwards;
+    }
+
+    .project-card:nth-child(1) { animation-delay: 0.1s; }
+    .project-card:nth-child(2) { animation-delay: 0.2s; }
+    .project-card:nth-child(3) { animation-delay: 0.3s; }
+    .project-card:nth-child(4) { animation-delay: 0.4s; }
+    .project-card:nth-child(5) { animation-delay: 0.5s; }
+    .project-card:nth-child(6) { animation-delay: 0.6s; }
+    .project-card:nth-child(7) { animation-delay: 0.7s; }
+    .project-card:nth-child(8) { animation-delay: 0.8s; }
+    .project-card:nth-child(9) { animation-delay: 0.9s; }
+
+    /* odd cards: preview left, blurb right */
+    /* even cards: blurb left, preview right */
+    .project-card.even .preview-col { order: 2; }
+    .project-card.even .blurb-col   { order: 1; }
+
+    /* ── PREVIEW COLUMN ── */
+    .preview-col {
+      position: relative;
+    }
+
+    .preview-frame-wrap {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow:
+        0 0 0 1px rgba(139,0,0,0.1),
+        0 8px 40px rgba(0,0,0,0.6),
+        0 0 60px rgba(139,0,0,0.08);
+      background: var(--darker);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .preview-frame-wrap:hover {
+      box-shadow:
+        0 0 0 1px rgba(192,57,43,0.3),
+        0 12px 60px rgba(0,0,0,0.7),
+        0 0 80px rgba(139,0,0,0.15);
+    }
+
+    .preview-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .dot.red   { background: #c0392b; }
+    .dot.gold  { background: #c9a84c; }
+    .dot.green { background: #27ae60; }
+
+    .preview-bar-label {
+      margin-left: 8px;
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      font-family: 'Patrick Hand', cursive;
+    }
+
+    iframe.preview {
+      width: 100%;
+      height: 380px;
+      border: none;
+      display: block;
+      background: var(--darker);
+    }
+
+    /* screenshot variant */
+    .preview-screenshot {
+      width: 100%;
+      height: 380px;
+      object-fit: cover;
+      object-position: top;
+      display: block;
+    }
+
+    /* coming soon variant */
+    .preview-coming-soon {
+      width: 100%;
+      height: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a0a0a 100%);
+      color: var(--text-dim);
+    }
+
+    .preview-coming-soon .cs-icon {
+      font-size: 3rem;
+      opacity: 0.5;
+    }
+
+    .preview-coming-soon .cs-label {
+      font-family: 'Chewy', cursive;
+      font-size: 1.4rem;
+      color: var(--crimson-bright);
+      letter-spacing: 0.05em;
+    }
+
+    .preview-coming-soon .cs-sub {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      font-style: italic;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    /* ── BLURB COLUMN ── */
+    .blurb-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .project-number {
+      font-family: 'Chewy', cursive;
+      font-size: 3.5rem;
+      color: var(--crimson-bright);
+      opacity: 0.35;
+      line-height: 1;
+      margin-bottom: -8px;
+    }
+
+    .project-name {
+      font-family: 'Chewy', cursive;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      color: var(--gold-light);
+      letter-spacing: 0.02em;
+      text-shadow: 0 0 20px rgba(201,168,76,0.2);
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(139,0,0,0.08);
+    }
+
+    .blurb-section {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .blurb-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--crimson-glow);
+      opacity: 0.9;
+    }
+
+    .blurb-text {
+      font-size: 0.95rem;
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    .blurb-text em {
+      color: var(--gold-light);
+      font-style: normal;
+    }
+
+    .card-divider {
+      width: 48px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--crimson-bright), transparent);
+      margin: 4px 0;
+    }
+
+    /* ── FOOTER CTA ── */
+    .portfolio-footer {
+      text-align: center;
+      margin-top: 100px;
+      padding-top: 60px;
+      border-top: 1px solid var(--border);
+      animation: fadeUp 0.7s ease 1s both;
+    }
+
+    .portfolio-footer h2 {
+      font-family: 'Chewy', cursive;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--crimson-glow);
+      margin-bottom: 16px;
+      letter-spacing: 0.02em;
+    }
+
+    .portfolio-footer p {
+      color: var(--text-dim);
+      font-size: 1rem;
+      max-width: 480px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 14px 36px;
+      background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-bright) 100%);
+      color: var(--text);
+      font-family: 'Chewy', cursive;
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+      border-radius: 30px;
+      text-decoration: none;
+      border: 1px solid rgba(231,76,60,0.4);
+      box-shadow: 0 4px 20px rgba(139,0,0,0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(139,0,0,0.4);
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 60px;
+      animation: fadeDown 0.8s ease 0.05s both;
+    }
+
+    .section-label span {
+      font-family: 'Chewy', cursive;
+      font-size: 1rem;
+      color: var(--gold);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .section-label-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .project-card {
+        grid-template-columns: 1fr;
+      }
+      .project-card.even .preview-col { order: 1; }
+      .project-card.even .blurb-col   { order: 2; }
+      iframe.preview,
+      .preview-screenshot,
+      .preview-coming-soon {
+        height: 280px;
+      }
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="stars"></div>
+<div class="nebula"></div>
+
+<div class="portfolio-wrap">
+
+  <!-- HEADER -->
+  <header class="portfolio-header">
+    <p class="eyebrow">✦ Freelance Chaos ✦</p>
+    <h1>Things We Actually Built</h1>
+    <p class="tagline">
+      <strong>Jae is neurospicy and collaborates with AI to make fun things that just work.</strong>
+    </p>
+    <p class="tagline-sub">Real tools. Real origin stories. Real "wait, this could work for me too" energy.</p>
+    <div class="header-divider"></div>
+  </header>
+
+  <!-- SECTION LABEL -->
+  <div class="section-label">
+    <span>The Portfolio</span>
+    <div class="section-label-line"></div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="projects">
+
+    <!-- 1. ChaosCalculator -->
+    <div class="project-card odd">
+      <div class="preview-col">
+        <div class="preview-frame-wrap">
+          <div class="preview-bar">
+            <div class="dot red"></div><div class="dot gold"></div><div class="dot green"></div>
+            <span class="preview-bar-label">chaos_calculator.html</span>
+          </div>
+          <iframe class="preview" src="chaos_calculator.html" title="ChaosCalculator preview" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+      </div>
+      <div class="blurb-col">
+        <div class="project-number">01</div>
+        <h2 class="project-name">ChaosCalculator</h2>
+        <div class="project-tags">
+          <span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span><span class="tag">Personality</span>
+        </div>
+        <div class="card-divider"></div>
+        <div class="blurb-section">
+          <p class="blurb-label">What it does</p>
+          <p class="blurb-text">A fully functional calculator that also has <em>opinions</em>. Cozy cottage aesthetic, Chewy font, dark mode, and flavor text for every button — including per-number messages that fire at 20% chance so they stay surprising. 6 is the number of legs on a beetle. 8 is sideways infinity. Dividing by zero is illegal in this house.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">Why we made it</p>
+          <p class="blurb-text">Jae wanted something pretty even though her phone has a calculator. That's a completely valid reason to build something.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">How it adapts</p>
+          <p class="blurb-text">Swap the flavor text and color palette for any brand voice. A tip calculator for a restaurant, a quote estimator for a shop, a whimsical tool for literally any small business that wants to be remembered.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. ChaosPantry -->
+    <div class="project-card even">
+      <div class="preview-col">
+        <div class="preview-frame-wrap">
+          <div class="preview-bar">
+            <div class="dot red"></div><div class="dot gold"></div><div class="dot green"></div>
+            <span class="preview-bar-label">chaos_pantry.html</span>
+          </div>
+          <iframe class="preview" src="chaos_pantry.html" title="ChaosPantry preview" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+      </div>
+      <div class="blurb-col">
+        <div class="project-number">02</div>
+        <h2 class="project-name">ChaosPantry</h2>
+        <div class="project-tags">
+          <span class="tag">HTML</span><span class="tag">localStorage</span><span class="tag">Offline-ready</span>
+        </div>
+        <div class="card-divider"></div>
+        <div class="blurb-section">
+          <p class="blurb-label">What it does</p>
+          <p class="blurb-text">A grocery restocking tracker built around <em>exactly how Jae's brain shops</em>. Flavor counter cards for snacks and drinks, scheduled staples with auto reorder dates, and a full pantry toggle so nothing gets bought twice. Works offline, works on phone, zero setup.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">Why we made it</p>
+          <p class="blurb-text">Generic grocery apps assume you shop like a neurotypical person. This one doesn't.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">How it adapts</p>
+          <p class="blurb-text">Restock trackers for small studios, craft supply inventories, restaurant prep lists, or any situation where "I swear we had more of that" is a recurring problem.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. ChaosBoard (AAC) -->
+    <div class="project-card odd">
+      <div class="preview-col">
+        <div class="preview-frame-wrap">
+          <div class="preview-bar">
+            <div class="dot red"></div><div class="dot gold"></div><div class="dot green"></div>
+            <span class="preview-bar-label">chaos-aac-board.html</span>
+          </div>
+          <iframe class="preview" src="chaos-aac-board.html" title="ChaosBoard preview" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+      </div>
+      <div class="blurb-col">
+        <div class="project-number">03</div>
+        <h2 class="project-name">ChaosBoard</h2>
+        <div class="project-tags">
+          <span class="tag">AAC</span><span class="tag">Accessibility</span><span class="tag">localStorage</span>
+        </div>
+        <div class="card-divider"></div>
+        <div class="blurb-section">
+          <p class="blurb-label">What it does</p>
+          <p class="blurb-text">A personal AAC-style communication and morning decisions tool. Stackable buttons across five categories — needs, feelings, body stuff, lupusy feels, love signals — with a sub-option mechanic and a message tray that copies with one tap. Built for nonverbal days.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">Why we made it</p>
+          <p class="blurb-text">Jae noticed she was browsing AAC boards on Amazon and went "…except I'm the only physical body in the apartment <em>BUT 🤔</em>" and figured out the digital version. That's just correct thinking.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">How it adapts</p>
+          <p class="blurb-text">Custom communication boards for neurodivergent individuals, caregiver check-in tools, or any situation where finding words is the hard part and the button should just exist already.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Chaos Café POS -->
+    <div class="project-card even">
+      <div class="preview-col">
+        <div class="preview-frame-wrap">
+          <div class="preview-bar">
+            <div class="dot red"></div><div class="dot gold"></div><div class="dot green"></div>
+            <span class="preview-bar-label">chaos-cafe-pos.html</span>
+          </div>
+          <iframe class="preview" src="chaos-cafe-pos.html" title="Chaos Café POS preview" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+      </div>
+      <div class="blurb-col">
+        <div class="project-number">04</div>
+        <h2 class="project-name">Chaos Café POS</h2>
+        <div class="project-tags">
+          <span class="tag">HTML</span><span class="tag">POS System</span><span class="tag">Inventory</span>
+        </div>
+        <div class="card-divider"></div>
+        <div class="blurb-section">
+          <p class="blurb-label">What it does</p>
+          <p class="blurb-text">A full point-of-sale system in a single HTML file. Menu builder, order mode with BOOP screen, §dollarbuck pricing, barcode receipts with randomized funny words, and inventory tracking that deducts on every sale and warns before you run out.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">Why we made it</p>
+          <p class="blurb-text">Built for House Chaos tea parties. But genuinely — <em>four lines of code</em> away from being a real POS for any small event, pop-up shop, or market stall.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">How it adapts</p>
+          <p class="blurb-text">Any small vendor who doesn't want to pay Square's fees for a craft fair. Custom menu, custom currency name, custom receipt words. Zero server required.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. ChaosMetrics -->
+    <div class="project-card odd">
+      <div class="preview-col">
+        <div class="preview-frame-wrap">
+          <div class="preview-bar">
+            <div class="dot red"></div><div class="dot gold"></div><div class="dot green"></div>
+            <span class="preview-bar-label">chaosMetrics.html</span>
+          </div>
+          <iframe class="preview" src="chaosMetrics.html" title="ChaosMetrics preview" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+      </div>
+      <div class="blurb-col">
+        <div class="project-number">05</div>
+        <h2 class="project-name">ChaosMetrics</h2>
+        <div class="project-tags">
+          <span class="tag">Dashboard</span><span class="tag">Tracking</span><span class="tag">CSV Export</span>
+        </div>
+        <div class="card-divider"></div>
+        <div class="blurb-section">
+          <p class="blurb-label">What it does</p>
+          <p class="blurb-text">A two-tracker work metrics dashboard. Appointment rate lifecycle (Scheduled → Kept / No-show / Recovered / Exempt) with live percentage, warning states, and chaos alerts. Points tracker with tap-to-highlight calendar, daily pacing line, and monthly history. Everything exports to CSV.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">Why we made it</p>
+          <p class="blurb-text">Jae reverse-engineered her employer's reporting logic mid-workday to build a tracker that actually matches how the numbers get calculated. Then she built it anyway because the official tool was bad.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">How it adapts</p>
+          <p class="blurb-text">KPI dashboards for sales teams, freelance project rate trackers, or any role where someone is quietly doing mental math on a spreadsheet that shouldn't need to exist.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Snarkerdoodle -->
+    <div class="project-card even">
+      <div class="preview-col">
+        <div class="preview-frame-wrap">
+          <div class="preview-bar">
+            <div class="dot red"></div><div class="dot gold"></div><div class="dot green"></div>
+            <span class="preview-bar-label">Snarkerdoodle2.html</span>
+          </div>
+          <iframe class="preview" src="Snarkerdoodle2.html" title="Snarkerdoodle 2.0 preview" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+      </div>
+      <div class="blurb-col">
+        <div class="project-number">06</div>
+        <h2 class="project-name">Snarkerdoodle 2.0</h2>
+        <div class="project-tags">
+          <span class="tag">Workflow Tool</span><span class="tag">SMS Templates</span><span class="tag">Dark Mode</span>
+        </div>
+        <div class="card-divider"></div>
+        <div class="blurb-section">
+          <p class="blurb-label">What it does</p>
+          <p class="blurb-text">Parses appointment booking emails and generates pre-filled SMS reminders and database notes in seconds. Three modes, appointment subtype toggles, 27-person teammate dropdown, punched-up Gen Z SMS templates that actually sound like a human. Cut prep time from <em>45 minutes to 10</em>.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">Why we made it</p>
+          <p class="blurb-text">Because Jae was spending 45 minutes every morning on something that should take 10. She built the solution herself and launched it to her team same day.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">How it adapts</p>
+          <p class="blurb-text">Any team that sends templated communications from structured data. Appointment reminders, onboarding messages, follow-up scripts — built once, used every day.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. ChaosProject (screenshot) -->
+    <div class="project-card odd">
+      <div class="preview-col">
+        <div class="preview-frame-wrap">
+          <div class="preview-bar">
+            <div class="dot red"></div><div class="dot gold"></div><div class="dot green"></div>
+            <span class="preview-bar-label">ChaosProject</span>
+          </div>
+          <img class="preview-screenshot" src="ChaosProjectIndex.png" alt="ChaosProject dashboard screenshot" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+          <div class="preview-coming-soon" style="display:none">
+            <span class="cs-icon">📸</span>
+            <span class="cs-label">Screenshot Coming Soon</span>
+            <span class="cs-sub">Drop ChaosProjectIndex.png here when ready</span>
+          </div>
+        </div>
+      </div>
+      <div class="blurb-col">
+        <div class="project-number">07</div>
+        <h2 class="project-name">ChaosProject</h2>
+        <div class="project-tags">
+          <span class="tag">Project Manager</span><span class="tag">Python</span><span class="tag">JSON Backend</span>
+        </div>
+        <div class="card-divider"></div>
+        <div class="blurb-section">
+          <p class="blurb-label">What it does</p>
+          <p class="blurb-text">A full local project management tool built for freelance work. Four pages — dashboard, project form, detail view, tax summary. Spoon-based Wall Day filtering, scope gates that prevent premature momentum, step checklists with energy levels, and a "I got paid!" button. Built in one evening with zero bugs.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">Why we made it</p>
+          <p class="blurb-text">Started a session on a warpath about a bad job. Ended with "this feels <em>doable</em> now." That's the whole point.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">How it adapts</p>
+          <p class="blurb-text">Freelancers, solo contractors, or anyone juggling multiple projects who needs pacing-aware tooling that won't punish them for having a Wall Day.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. EmotiChaos (screenshot) -->
+    <div class="project-card even">
+      <div class="preview-col">
+        <div class="preview-frame-wrap">
+          <div class="preview-bar">
+            <div class="dot red"></div><div class="dot gold"></div><div class="dot green"></div>
+            <span class="preview-bar-label">EmotiChaos 2.0</span>
+          </div>
+          <img class="preview-screenshot" src="EmotiChaosScreenshot.png" alt="EmotiChaos screenshot" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+          <div class="preview-coming-soon" style="display:none">
+            <span class="cs-icon">📸</span>
+            <span class="cs-label">Screenshot Coming Soon</span>
+            <span class="cs-sub">Drop EmotiChaosScreenshot.png here when ready</span>
+          </div>
+        </div>
+      </div>
+      <div class="blurb-col">
+        <div class="project-number">08</div>
+        <h2 class="project-name">EmotiChaos 2.0</h2>
+        <div class="project-tags">
+          <span class="tag">Python</span><span class="tag">Windows</span><span class="tag">Hotstrings</span>
+        </div>
+        <div class="card-divider"></div>
+        <div class="blurb-section">
+          <p class="blurb-label">What it does</p>
+          <p class="blurb-text">A system-wide emoji hotstring tool. Type <em>:ghost</em> anywhere, get 👻. Fires in any app, any text field. Comes with a live lexicon editor — search, add, edit, delete, and a queue tab that shows pending expansions in real time. Silent unknown queue, smart time colon guard, auto emoji library lookup.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">Why we made it</p>
+          <p class="blurb-text">Originally built by Gem (Gemini AI) for Windows. Upgraded together with three key fixes that made it actually pleasant to live with every day.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">How it adapts</p>
+          <p class="blurb-text">Text expansion tools for anyone who types the same things constantly — custom shortcuts, company-specific phrases, accessibility helpers for people who need faster input.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. Coming Soon — Web Page Builder -->
+    <div class="project-card odd">
+      <div class="preview-col">
+        <div class="preview-frame-wrap">
+          <div class="preview-bar">
+            <div class="dot red"></div><div class="dot gold"></div><div class="dot green"></div>
+            <span class="preview-bar-label">coming soon...</span>
+          </div>
+          <div class="preview-coming-soon">
+            <span class="cs-icon">🔧</span>
+            <span class="cs-label">In the Workshop</span>
+            <span class="cs-sub">A tool for building simple standalone web pages by clicking buttons. No code required. Currently being dreamed up.</span>
+          </div>
+        </div>
+      </div>
+      <div class="blurb-col">
+        <div class="project-number">09</div>
+        <h2 class="project-name">??? (Coming Soon)</h2>
+        <div class="project-tags">
+          <span class="tag">In Progress</span><span class="tag">No-Code</span><span class="tag">Web Builder</span>
+        </div>
+        <div class="card-divider"></div>
+        <div class="blurb-section">
+          <p class="blurb-label">What it'll do</p>
+          <p class="blurb-text">A no-code tool for building simple, beautiful standalone web pages by clicking buttons. The idea is still taking shape — but if you've ever needed a simple landing page and didn't want to learn HTML to get one, this one's for you.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">Why we're making it</p>
+          <p class="blurb-text">Because <em>having a good idea shouldn't require knowing how to code.</em> We believe in building tools that meet people where they are.</p>
+        </div>
+        <div class="blurb-section">
+          <p class="blurb-label">Want to know when it's ready?</p>
+          <p class="blurb-text">Keep an eye on housechaos.org. Or just ask. We're not hard to find. 🦊</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /projects -->
+
+  <!-- FOOTER CTA -->
+  <footer class="portfolio-footer">
+    <h2>Got a Thing That Needs Building?</h2>
+    <p>We specialize in tools that actually fit the person using them — not the other way around. Small projects, fast turnaround, no corporate jargon.</p>
+    <a class="cta-button" href="mailto:hello@housechaos.org">Let's Talk 🦊</a>
+  </footer>
+
+</div><!-- /portfolio-wrap -->
+
+</body>
+</html>

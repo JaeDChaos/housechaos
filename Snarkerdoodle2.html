@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🍪 Snarkerdoodle 2.0</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue-dark: #1e6da9;
+      --blue-mid: #0095c7;
+      --blue-light: #e8f4fb;
+      --blue-xlight: #f2f9fd;
+      --white: #ffffff;
+      --text-dark: #0d2d45;
+      --text-mid: #2c5f82;
+      --text-soft: #6b9ab8;
+      --border: #b8d9ee;
+      --success: #2a9d5c;
+      --warning: #e07b2a;
+      --shadow: 0 2px 12px rgba(30,109,169,0.10);
+      --shadow-lg: 0 8px 32px rgba(30,109,169,0.15);
+      --radius: 10px;
+      --radius-sm: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--blue-xlight);
+      color: var(--text-dark);
+      min-height: 100vh;
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--blue-xlight); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: var(--blue-mid); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--blue-dark); }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 100%);
+      padding: 1.2em 2em;
+      display: flex;
+      align-items: center;
+      gap: 1em;
+      box-shadow: var(--shadow-lg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header .logo {
+      font-size: 1.6em;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.5px;
+    }
+    header .logo span { opacity: 0.75; font-weight: 400; }
+    header .tagline {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.85em;
+      font-style: italic;
+    }
+    header .badge {
+      margin-left: auto;
+      background: rgba(255,255,255,0.15);
+      color: white;
+      font-size: 0.75em;
+      font-weight: 600;
+      padding: 0.3em 0.8em;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    /* LAYOUT */
+    .app-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1.5em;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 1.5em;
+      align-items: start;
+    }
+
+    /* PANELS */
+    .panel {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .panel-header {
+      background: var(--blue-dark);
+      color: white;
+      padding: 0.75em 1.2em;
+      font-weight: 600;
+      font-size: 0.9em;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    .panel-body { padding: 1.2em; }
+
+    /* MODE TOGGLE */
+    .mode-toggle {
+      display: flex;
+      background: var(--blue-xlight);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+      margin-bottom: 1.2em;
+      border: 1px solid var(--border);
+    }
+    .mode-btn {
+      flex: 1;
+      padding: 0.5em;
+      border: none;
+      background: transparent;
+      border-radius: calc(var(--radius-sm) - 2px);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82em;
+      font-weight: 600;
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mode-btn.active {
+      background: var(--blue-dark);
+      color: white;
+      box-shadow: 0 1px 4px rgba(30,109,169,0.3);
+    }
+
+    /* FORM ELEMENTS */
+    .field-group { margin-bottom: 1em; }
+    .field-group label {
+      display: block;
+      font-size: 0.8em;
+      font-weight: 600;
+      color: var(--text-mid);
+      margin-bottom: 0.3em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .field-group .hint {
+      font-size: 0.72em;
+      color: var(--text-soft);
+      margin-top: 0.2em;
+      font-style: italic;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.55em 0.8em;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88em;
+      color: var(--text-dark);
+      background: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--blue-mid);
+      box-shadow: 0 0 0 3px rgba(0,149,199,0.12);
+    }
+    textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+
+    /* TOGGLES ROW */
+    .toggles-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5em;
+      margin-bottom: 1em;
+    }
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6em;
+      padding: 0.5em 0.7em;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      background: var(--blue-xlight);
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .toggle-item:hover { border-color: var(--blue-mid); }
+    .toggle-item input[type="checkbox"] {
+      width: 16px; height: 16px;
+      accent-color: var(--blue-dark);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .toggle-item label {
+      font-size: 0.83em;
+      font-weight: 600;
+      color: var(--text-mid);
+      cursor: pointer;
+      text-transform: none;
+      letter-spacing: 0;
+      margin: 0;
+    }
+    .toggle-item .toggle-badge {
+      margin-left: auto;
+      font-size: 0.68em;
+      background: var(--blue-mid);
+      color: white;
+      padding: 0.15em 0.5em;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+    .toggle-item.tp-special { border-color: #0095c7; background: #e8f4fb; }
+    .toggle-item.wfh-special { border-color: var(--warning); background: #fdf3ea; }
+    .toggle-item.wfh-special label { color: var(--warning); }
+
+    /* APPT TYPE ROW */
+    .appt-type-row {
+      display: flex;
+      gap: 0.4em;
+      margin-bottom: 1em;
+    }
+    .appt-type-btn {
+      flex: 1;
+      padding: 0.45em 0.3em;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--blue-xlight);
+      color: var(--text-soft);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .appt-type-btn.active {
+      background: var(--blue-dark);
+      color: white;
+      border-color: var(--blue-dark);
+    }
+
+    /* NAME TOGGLE */
+    .name-format-row {
+      display: flex;
+      gap: 0.4em;
+      margin-bottom: 1em;
+    }
+    .name-fmt-btn {
+      flex: 1;
+      padding: 0.4em;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--blue-xlight);
+      color: var(--text-soft);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .name-fmt-btn.active {
+      background: var(--blue-mid);
+      color: white;
+      border-color: var(--blue-mid);
+    }
+
+    /* GENERATE BUTTON */
+    .generate-btn {
+      width: 100%;
+      padding: 0.8em;
+      background: linear-gradient(135deg, var(--blue-dark), var(--blue-mid));
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.3px;
+      box-shadow: 0 2px 8px rgba(30,109,169,0.3);
+    }
+    .generate-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(30,109,169,0.4);
+    }
+    .generate-btn:active { transform: translateY(0); }
+
+    /* PARSED DETAILS */
+    .parsed-card {
+      background: var(--blue-xlight);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.8em 1em;
+      margin-bottom: 1.2em;
+      display: none;
+    }
+    .parsed-card.visible { display: block; }
+    .parsed-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      padding: 0.3em 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .parsed-row:last-child { border-bottom: none; }
+    .parsed-label {
+      font-size: 0.72em;
+      font-weight: 700;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      min-width: 80px;
+    }
+    .parsed-value {
+      font-size: 0.85em;
+      font-family: 'DM Mono', monospace;
+      color: var(--text-dark);
+      font-weight: 500;
+      flex: 1;
+    }
+    .copy-inline {
+      background: var(--blue-dark);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.2em 0.6em;
+      font-size: 0.7em;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .copy-inline:hover { background: var(--blue-mid); }
+    .copy-inline.copied { background: var(--success); }
+
+    /* OUTPUT PANEL */
+    .output-panel { display: block; }
+    .output-panel.visible { display: block; }
+
+    /* TABS */
+    .tab-bar {
+      display: flex;
+      border-bottom: 2px solid var(--border);
+      background: var(--blue-xlight);
+      border-radius: var(--radius) var(--radius) 0 0;
+      overflow: hidden;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 0.75em 0.5em;
+      border: none;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8em;
+      font-weight: 600;
+      color: var(--text-soft);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { color: var(--blue-dark); background: rgba(30,109,169,0.05); }
+    .tab-btn.active {
+      color: var(--blue-dark);
+      border-bottom-color: var(--blue-dark);
+      background: var(--white);
+    }
+    .tab-content { display: none; padding: 1.2em; }
+    .tab-content.active { display: block; }
+
+    /* OUTPUT SECTIONS */
+    .output-section { margin-bottom: 1.3em; }
+    .output-section:last-child { margin-bottom: 0; }
+    .output-label {
+      font-size: 0.78em;
+      font-weight: 700;
+      color: var(--text-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.4em;
+      display: flex;
+      align-items: center;
+      gap: 0.4em;
+    }
+    .output-label .label-badge {
+      font-size: 0.7em;
+      background: var(--blue-light);
+      color: var(--blue-dark);
+      padding: 0.1em 0.5em;
+      border-radius: 10px;
+      font-weight: 600;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .output-textarea {
+      width: 100%;
+      min-height: 90px;
+      padding: 0.7em 0.9em;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.84em;
+      line-height: 1.55;
+      color: var(--text-dark);
+      background: var(--white);
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .output-textarea:focus { border-color: var(--blue-mid); }
+    .copy-btn {
+      margin-top: 0.4em;
+      padding: 0.4em 1em;
+      background: var(--blue-dark);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .copy-btn:hover { background: var(--blue-mid); }
+    .copy-btn.copied { background: var(--success); }
+
+    /* CALL LIST TAB */
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5em;
+      margin-bottom: 1em;
+    }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      padding: 0.5em 0.7em;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--blue-xlight);
+      cursor: pointer;
+    }
+    .check-item input[type="checkbox"] {
+      width: 15px; height: 15px;
+      accent-color: var(--blue-dark);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .check-item label {
+      font-size: 0.8em;
+      font-weight: 600;
+      color: var(--text-mid);
+      cursor: pointer;
+    }
+
+    /* REMINDER FLAGS */
+    .reminder-flags {
+      margin-bottom: 1em;
+    }
+    .reminder-flags-title {
+      font-size: 0.78em;
+      font-weight: 700;
+      color: var(--text-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5em;
+    }
+    .flags-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.4em;
+    }
+    .flag-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      padding: 0.45em 0.65em;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--blue-xlight);
+    }
+    .flag-item input[type="checkbox"] {
+      width: 14px; height: 14px;
+      accent-color: var(--blue-mid);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .flag-item label {
+      font-size: 0.78em;
+      font-weight: 500;
+      color: var(--text-mid);
+      cursor: pointer;
+    }
+
+    /* TOOLTIP */
+    [data-tip] { position: relative; cursor: help; }
+    [data-tip]::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0d2d45;
+      color: #ffffff;
+      font-size: 0.72em;
+      padding: 0.4em 0.7em;
+      border-radius: 5px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 50;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      border: 1px solid #1e6da9;
+    }
+    [data-tip]:hover::after { opacity: 1; }
+
+    /* DIVIDER */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1em 0;
+    }
+
+    /* WARM TRANSFER NOTICE */
+    .wt-notice {
+      background: #e8f4fb;
+      border: 1.5px solid var(--blue-mid);
+      border-radius: var(--radius-sm);
+      padding: 0.6em 0.9em;
+      font-size: 0.8em;
+      color: var(--text-mid);
+      margin-bottom: 1em;
+      display: none;
+    }
+    .wt-notice.visible { display: block; }
+
+    /* RESPONSIVE */
+    @media (max-width: 700px) {
+      .app-container { grid-template-columns: 1fr; }
+    }
+
+    /* DARK MODE */
+    body.dark {
+      --blue-xlight: #1a2535;
+      --white: #212d3d;
+      --text-dark: #e8f0f7;
+      --text-mid: #a8c4d8;
+      --text-soft: #6b8fa8;
+      --border: #2e4058;
+      --blue-light: #1e3048;
+      --shadow: 0 2px 12px rgba(0,0,0,0.3);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+      background: #131e2b;
+      color: var(--text-dark);
+    }
+    body.dark input,
+    body.dark select,
+    body.dark textarea { background: #1a2535; color: var(--text-dark); border-color: var(--border); }
+    body.dark .output-textarea { background: #1a2535; color: var(--text-dark); }
+    body.dark .wt-notice { background: #1e3048; color: var(--text-mid); }
+    body.dark .tab-btn.active { background: #212d3d; }
+    body.dark .parsed-card { background: #1a2535; }
+    body.dark .toggle-item { background: #1e3048; }
+    body.dark .toggle-item.tp-special { background: #1a2e40; }
+    body.dark .toggle-item.wfh-special { background: #2e1f10; }
+    body.dark .flag-item { background: #1e3048; }
+    body.dark .check-item { background: #1e3048; }
+    body.dark .appt-type-btn { background: #1e3048; color: var(--text-soft); }
+    body.dark .name-fmt-btn { background: #1e3048; color: var(--text-soft); }
+    body.dark .mode-btn { color: var(--text-soft); }
+    body.dark .mode-toggle { background: #1a2535; }
+    body.dark .tab-bar { background: #1a2535; }
+
+    /* DARK TOGGLE BUTTON */
+    .dark-toggle {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      font-size: 1.1em;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      flex-shrink: 0;
+      margin-left: 0.5em;
+    }
+    .dark-toggle:hover { background: rgba(255,255,255,0.28); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">🍪 Snarkerdoodle <span>2.0</span></div>
+    <div class="tagline">The sweet and snarky all-in-one grad tool</div>
+  </div>
+  <div class="badge">UMA Web App Team</div>
+  <button class="dark-toggle" onclick="toggleDark()" id="darkBtn" title="Toggle dark mode">🌙</button>
+</header>
+
+<div class="app-container">
+
+  <!-- LEFT: INPUT PANEL -->
+  <div class="panel">
+    <div class="panel-header">⚙️ Appointment Setup</div>
+    <div class="panel-body">
+
+      <!-- MODE TOGGLE -->
+      <div class="mode-toggle">
+        <button class="mode-btn active" onclick="setMode('standard')" id="modeStandard">📧 Scheduled</button>
+        <button class="mode-btn" onclick="setMode('warmtransfer')" id="modeWarm">🔄 Warm Transfer</button>
+        <button class="mode-btn" onclick="setMode('calllist')" id="modeCalllist">📋 Call List</button>
+      </div>
+
+      <!-- WARM TRANSFER NOTICE -->
+      <div class="wt-notice" id="wtNotice">
+        Warm transfer mode: enter grad info manually. No SMS reminders will be generated — notes template only.
+      </div>
+
+      <!-- YOUR NAME -->
+      <div class="field-group">
+        <label data-tip="Select your name to auto-fill your phone number and initials">Your Name</label>
+        <select id="WasName" onchange="updateAgentInfo()">
+          <option value="">-- Select --</option>
+        </select>
+      </div>
+
+      <!-- STANDARD: EMAIL PASTE -->
+      <div id="emailSection">
+        <div class="field-group">
+          <label data-tip="Paste the full appointment email here — phone, name, and time will be parsed automatically">Appointment Email</label>
+          <textarea id="AppointmentEmail" rows="6" placeholder="Paste appointment email here..."></textarea>
+        </div>
+      </div>
+
+      <!-- WARM TRANSFER: MANUAL FIELDS -->
+      <div id="manualSection" style="display:none;">
+        <div class="field-group">
+          <label>Grad's Full Name</label>
+          <input id="ManualName" placeholder="First Last" />
+        </div>
+        <div class="field-group">
+          <label>Grad's Phone</label>
+          <input id="ManualPhone" placeholder="813-555-1234" />
+        </div>
+        <div class="field-group">
+          <label>Grad's Email</label>
+          <input id="ManualEmail" placeholder="grad@email.com" />
+        </div>
+      </div>
+
+      <!-- APPOINTMENT TYPE -->
+      <div class="field-group">
+        <label data-tip="What company/position is this appointment for?">Appointment Type</label>
+        <input id="Appointment" placeholder="e.g., Carenet, Walgreens, VXI..." />
+      </div>
+
+      <!-- APPT SUBTYPE -->
+      <div class="field-group">
+        <label>Appointment Focus</label>
+        <div class="appt-type-row">
+          <button class="appt-type-btn active" onclick="setApptType('both')" id="typeBoth">App + Assessment</button>
+          <button class="appt-type-btn" onclick="setApptType('app')" id="typeApp">App Only</button>
+          <button class="appt-type-btn" onclick="setApptType('assess')" id="typeAssess">Assessment Only</button>
+        </div>
+      </div>
+
+      <!-- SYSTEM ID -->
+      <div class="field-group">
+        <label data-tip="The system ID used for texting">System ID</label>
+        <input id="SystemID" placeholder="e.g., 1234567" />
+      </div>
+
+      <!-- NAME FORMAT -->
+      <div class="field-group">
+        <label>Your Name Format in SMS</label>
+        <div class="name-format-row">
+          <button class="name-fmt-btn active" onclick="setNameFormat('first')" id="fmtFirst">First Name Only</button>
+          <button class="name-fmt-btn" onclick="setNameFormat('full')" id="fmtFull">First + Last</button>
+        </div>
+      </div>
+
+      <!-- TOGGLES -->
+      <div class="field-group">
+        <label>Special Flags</label>
+        <div class="toggles-row">
+          <div class="toggle-item tp-special" data-tip="Enables Teleperformance-specific templates and note format">
+            <input type="checkbox" id="TpToggle" />
+            <label for="TpToggle">Teleperformance Appointment</label>
+            <span class="toggle-badge">TP</span>
+          </div>
+          <div class="toggle-item wfh-special" id="wfhToggleItem" style="display:none;" data-tip="WFH positions: grad will not be considered if no contact by end of appointment time">
+            <input type="checkbox" id="WfhToggle" />
+            <label for="WfhToggle">Work From Home Position</label>
+            <span class="toggle-badge" style="background:var(--warning)">WFH</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- REMINDER FLAGS -->
+      <div class="reminder-flags" id="emailSection-standard">
+        <div class="reminder-flags-title" data-tip="These items will be added to SMS reminders automatically">SMS Reminder Add-Ons</div>
+        <div class="flags-grid">
+          <div class="flag-item">
+            <input type="checkbox" id="flagPhotoID" />
+            <label for="flagPhotoID">📷 Photo ID Required</label>
+          </div>
+          <div class="flag-item">
+            <input type="checkbox" id="flagWebcam" />
+            <label for="flagWebcam">📹 Working Webcam</label>
+          </div>
+          <div class="flag-item">
+            <input type="checkbox" id="flagEthernet" />
+            <label for="flagEthernet">🔌 Ethernet Cable</label>
+          </div>
+          <div class="flag-item">
+            <input type="checkbox" id="flagQuiet" />
+            <label for="flagQuiet">🤫 Quiet Location</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- GENERATE BUTTON -->
+      <button class="generate-btn" onclick="generateOutputs()">✨ Generate Templates</button>
+
+    </div>
+  </div>
+
+  <!-- RIGHT: OUTPUT PANEL -->
+  <div class="panel output-panel" id="outputPanel">
+
+    <!-- PARSED DETAILS -->
+    <div class="parsed-card" id="parsedCard">
+      <div class="parsed-row">
+        <span class="parsed-label">Name</span>
+        <span class="parsed-value" id="ParsedName">—</span>
+        <button class="copy-inline" onclick="copySpan('ParsedName', this)">Copy</button>
+      </div>
+      <div class="parsed-row">
+        <span class="parsed-label">Phone</span>
+        <span class="parsed-value" id="ParsedPhone">—</span>
+        <button class="copy-inline" onclick="copySpan('ParsedPhone', this)">Copy</button>
+      </div>
+      <div class="parsed-row">
+        <span class="parsed-label">Email</span>
+        <span class="parsed-value" id="ParsedEmail">—</span>
+        <button class="copy-inline" onclick="copySpan('ParsedEmail', this)">Copy</button>
+      </div>
+      <div class="parsed-row">
+        <span class="parsed-label">CAR</span>
+        <span class="parsed-value" id="ParsedCar">—</span>
+        <button class="copy-inline" onclick="copySpan('ParsedCar', this)">Copy</button>
+      </div>
+      <div class="parsed-row">
+        <span class="parsed-label">Time</span>
+        <span class="parsed-value" id="ParsedTime">—</span>
+        <button class="copy-inline" onclick="copySpan('ParsedTime', this)">Copy</button>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('sms')" id="tabSms" style="display:none;">💬 SMS</button>
+      <button class="tab-btn" onclick="switchTab('calllist')" id="tabCalllist">📋 Call List</button>
+      <button class="tab-btn" onclick="switchTab('notes')" id="tabNotes" style="display:none;">📝 Notes</button>
+    </div>
+
+    <!-- SMS TAB -->
+    <div class="tab-content active" id="tab-sms">
+      <div class="output-section" id="smsMorning">
+        <div class="output-label">☀️ Morning Reminder <span class="label-badge">Day-of</span></div>
+        <textarea class="output-textarea" id="MorningSMSOutput" rows="5"></textarea>
+        <button class="copy-btn" onclick="copyOutput('MorningSMSOutput', this)">Copy</button>
+      </div>
+      <div class="output-section" id="smsEvening">
+        <div class="output-label">🌙 Evening Reminder <span class="label-badge">Day-before</span></div>
+        <textarea class="output-textarea" id="EveningSMSOutput" rows="4"></textarea>
+        <button class="copy-btn" onclick="copyOutput('EveningSMSOutput', this)">Copy</button>
+      </div>
+      <div class="output-section">
+        <div class="output-label">📞 No Answer Follow-Up</div>
+        <textarea class="output-textarea" id="FollowUpSMSOutput" rows="4"></textarea>
+        <button class="copy-btn" onclick="copyOutput('FollowUpSMSOutput', this)">Copy</button>
+      </div>
+      <div class="output-section">
+        <div class="output-label">📅 Reschedule Offer <span class="label-badge">Missed appt</span></div>
+        <textarea class="output-textarea" id="RescheduleSMSOutput" rows="4"></textarea>
+        <button class="copy-btn" onclick="copyOutput('RescheduleSMSOutput', this)">Copy</button>
+      </div>
+      <div class="output-section" id="wfhSection" style="display:none;">
+        <div class="output-label">⚠️ WFH Final Notice <span class="label-badge" style="background:#fdf3ea;color:var(--warning);">WFH Only</span></div>
+        <textarea class="output-textarea" id="WfhSMSOutput" rows="5"></textarea>
+        <button class="copy-btn" onclick="copyOutput('WfhSMSOutput', this)">Copy</button>
+      </div>
+      <div class="output-section">
+        <div class="output-label">⏰ Reminder Line <span class="label-badge">Copy to notepad</span></div>
+        <textarea class="output-textarea" id="ReminderLine" rows="2"></textarea>
+        <button class="copy-btn" onclick="copyOutput('ReminderLine', this)">Copy</button>
+      </div>
+    </div>
+
+    <!-- CALL LIST TAB -->
+    <div class="tab-content" id="tab-calllist">
+      <div class="field-group">
+        <label>Grad's Name</label>
+        <input id="CallListName" placeholder="First name or full name" />
+      </div>
+      <div class="field-group">
+        <label>Grad Phone (for call list)</label>
+        <input id="CallListPhone" placeholder="Grad's phone number" />
+      </div>
+      <div class="field-group">
+        <label>Call List System ID</label>
+        <input id="CallListSysID" placeholder="System ID for this text" />
+      </div>
+      <hr class="divider">
+      <div class="reminder-flags-title" style="margin-bottom:0.5em;">Follow-Up Items Needed</div>
+      <div class="checklist-grid">
+        <div class="check-item">
+          <input type="checkbox" id="clTyping" />
+          <label for="clTyping">⌨️ Typing Test Retake</label>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="clInternet" />
+          <label for="clInternet">🌐 Internet Speed Test</label>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="clAssessment" />
+          <label for="clAssessment">📋 Assessment</label>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="clWorkspace" />
+          <label for="clWorkspace">🖥️ Workspace Photos</label>
+        </div>
+      </div>
+      <button class="generate-btn" style="margin-top:0.5em;" onclick="generateCallList()">Generate Call List SMS</button>
+      <div class="output-section" style="margin-top:1em;" id="callListOutput" style="display:none;">
+        <div class="output-label">📋 Call List Follow-Up SMS</div>
+        <textarea class="output-textarea" id="CallListSMSOutput" rows="5"></textarea>
+        <button class="copy-btn" onclick="copyOutput('CallListSMSOutput', this)">Copy</button>
+      </div>
+    </div>
+
+    <!-- NOTES TAB -->
+    <div class="tab-content" id="tab-notes">
+      <div class="output-section">
+        <div class="output-label">📝 Note Template</div>
+        <textarea class="output-textarea" id="NoteTemplate" rows="14"></textarea>
+        <button class="copy-btn" onclick="copyOutput('NoteTemplate', this)">Copy</button>
+      </div>
+    </div>
+
+  </div><!-- end output panel -->
+
+</div><!-- end app-container -->
+
+<script>
+// ─── TEAMMATE DATA ───────────────────────────────────────────────
+const teammates = [
+  { WasName: "Jae Chaos",          WasPhone: "813-676-5663", WasInitials: "JC" },
+  { WasName: "Team Member",        WasPhone: "555-555-5555", WasInitials: "TM" },
+  { WasName: "John Deaux",         WasPhone: "123-456-7890", WasInitials: "JD" }
+];
+
+// ─── STATE ───────────────────────────────────────────────────────
+let currentMode = 'standard';
+let currentApptType = 'both';
+let currentNameFormat = 'first'; // 'first' or 'full'
+
+// ─── INIT ────────────────────────────────────────────────────────
+const wasNameSelect = document.getElementById("WasName");
+teammates.forEach(tm => {
+  const opt = document.createElement("option");
+  opt.value = tm.WasName;
+  opt.textContent = tm.WasName;
+  wasNameSelect.appendChild(opt);
+});
+
+// Restore saved name preference
+try {
+  const savedName = localStorage.getItem('snarkerdoodle-name');
+  if (savedName) wasNameSelect.value = savedName;
+} catch(e) {}
+
+// Save name preference on change
+wasNameSelect.addEventListener('change', function() {
+  try { localStorage.setItem('snarkerdoodle-name', this.value); } catch(e) {}
+});
+
+// ─── MODE ────────────────────────────────────────────────────────
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('modeStandard').classList.toggle('active', mode === 'standard');
+  document.getElementById('modeWarm').classList.toggle('active', mode === 'warmtransfer');
+  document.getElementById('modeCalllist').classList.toggle('active', mode === 'calllist');
+
+  const isCallList = mode === 'calllist';
+  const isWarm = mode === 'warmtransfer';
+  const isStandard = mode === 'standard';
+
+  // Input sections
+  document.getElementById('emailSection').style.display = isStandard ? '' : 'none';
+  document.getElementById('manualSection').style.display = isWarm ? '' : 'none';
+  document.getElementById('wtNotice').classList.toggle('visible', isWarm);
+
+  // Hide most input fields for call list mode
+  const apptField = document.getElementById('Appointment');
+  if (apptField) apptField.closest('.field-group').style.display = isCallList ? 'none' : '';
+  const sysIDField = document.getElementById('SystemID');
+  if (sysIDField) sysIDField.closest('.field-group').style.display = isCallList ? 'none' : '';
+  const apptTypeGroup = document.getElementById('typeBoth');
+  if (apptTypeGroup) apptTypeGroup.closest('.field-group').style.display = isCallList ? 'none' : '';
+  const fmtFirst = document.getElementById('fmtFirst');
+  if (fmtFirst) fmtFirst.closest('.field-group').style.display = isCallList ? 'none' : '';
+  const tpToggle = document.getElementById('TpToggle');
+  if (tpToggle) tpToggle.closest('.field-group').style.display = isCallList ? 'none' : '';
+  const reminderFlags = document.querySelector('.reminder-flags');
+  if (reminderFlags) reminderFlags.style.display = isCallList ? 'none' : '';
+  const generateBtn = document.querySelector('.generate-btn');
+  if (generateBtn) generateBtn.style.display = isCallList ? 'none' : '';
+
+  // Tab visibility
+  document.getElementById('tabSms').style.display = isStandard ? '' : 'none';
+  document.getElementById('tabCalllist').style.display = isCallList ? '' : 'none';
+  document.getElementById('tabNotes').style.display = isCallList ? 'none' : '';
+
+  // Parsed card only for standard
+  document.getElementById('parsedCard').classList.toggle('visible', false);
+
+  // Switch to correct tab
+  if (isCallList) {
+    switchTab('calllist');
+    document.getElementById('callListOutput').style.display = 'block';
+  } else if (isWarm) {
+    switchTab('notes');
+  } else {
+    switchTab('sms');
+  }
+}
+
+// ─── APPT TYPE ───────────────────────────────────────────────────
+function setApptType(type) {
+  currentApptType = type;
+  ['both','app','assess'].forEach(t => {
+    document.getElementById('type' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === type);
+  });
+}
+
+// ─── NAME FORMAT ─────────────────────────────────────────────────
+function setNameFormat(fmt) {
+  currentNameFormat = fmt;
+  document.getElementById('fmtFirst').classList.toggle('active', fmt === 'first');
+  document.getElementById('fmtFull').classList.toggle('active', fmt === 'full');
+}
+
+// ─── TABS ────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  const tabEl = document.getElementById('tab-' + tab);
+  const btnEl = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+  if (tabEl) tabEl.classList.add('active');
+  if (btnEl) btnEl.classList.add('active');
+}
+
+// ─── AGENT INFO ──────────────────────────────────────────────────
+function updateAgentInfo() {}
+
+function getAgent() {
+  const wasName = document.getElementById("WasName").value;
+  return teammates.find(t => t.WasName === wasName) || { WasPhone: "813-676-5663", WasInitials: "JC", WasName: "Jae Chaos" };
+}
+
+// ─── WFH TOGGLE VISIBILITY ───────────────────────────────────────
+document.getElementById('TpToggle').addEventListener('change', function() {
+  // TP and WFH are mutually exclusive for template purposes
+});
+
+// ─── MAIN GENERATE ───────────────────────────────────────────────
+function generateOutputs() {
+  const outputPanel = document.getElementById("outputPanel");
+  outputPanel.classList.add('visible');
+
+  const appointment = document.getElementById("Appointment").value.trim();
+  const systemID = document.getElementById("SystemID").value.trim();
+  const tpToggle = document.getElementById("TpToggle").checked;
+  const wfhToggle = document.getElementById("WfhToggle").checked;
+  const agent = getAgent();
+  const today = new Date().toLocaleDateString();
+
+  // Reminder flags
+  const flagPhotoID = document.getElementById("flagPhotoID").checked;
+  const flagWebcam = document.getElementById("flagWebcam").checked;
+  const flagEthernet = document.getElementById("flagEthernet").checked;
+  const flagQuiet = document.getElementById("flagQuiet").checked;
+
+  let gradName = "", gradFirstName = "", gradEmail = "", gradPhone = "", time = "", carContact = "";
+
+  if (currentMode === 'standard') {
+    const emailText = document.getElementById("AppointmentEmail").value;
+    // Parse phone — strip +1, handle various formats
+    const phoneMatch = emailText.match(/Phone:\s+\+?1?(\d{10})/);
+    gradPhone = phoneMatch ? phoneMatch[1].replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3") : "";
+    const nameMatch = emailText.match(/Name:\s+(.*)/);
+    gradName = nameMatch ? nameMatch[1].trim() : "";
+    gradFirstName = gradName.split(" ")[0] || "";
+    const emailMatch = emailText.match(/Email:\s+([^\s]+)/);
+    gradEmail = emailMatch ? emailMatch[1] : "";
+    const timeMatch = emailText.match(/\d{1,2}:\d{2}\s?[APM]+/i);
+    time = timeMatch ? timeMatch[0] : "";
+    const carMatch = emailText.match(/CAR:\s+(.*)/);
+    carContact = carMatch ? carMatch[1].trim() : "";
+  } else {
+    gradName = document.getElementById("ManualName").value.trim();
+    gradFirstName = gradName.split(" ")[0] || "";
+    gradPhone = document.getElementById("ManualPhone").value.trim();
+    gradEmail = document.getElementById("ManualEmail").value.trim();
+  }
+
+  const gradDisplayName = gradFirstName || gradName; // grad always uses first name
+  const agentFirstName = agent.WasName.split(" ")[0] || agent.WasName;
+  const agentDisplayName = currentNameFormat === 'first' ? agentFirstName : agent.WasName;
+
+  // Show parsed card for standard mode
+  const parsedCard = document.getElementById("parsedCard");
+  parsedCard.classList.toggle('visible', currentMode === 'standard');
+  if (currentMode === 'standard') {
+    document.getElementById("ParsedName").textContent = gradName || "—";
+    document.getElementById("ParsedPhone").textContent = gradPhone || "—";
+    document.getElementById("ParsedEmail").textContent = gradEmail || "—";
+    document.getElementById("ParsedCar").textContent = carContact || "—";
+    document.getElementById("ParsedTime").textContent = time || "—";
+  }
+
+  // Build reminder add-ons string
+  let reminderAddOns = [];
+  if (flagPhotoID) reminderAddOns.push("a valid photo ID");
+  if (flagWebcam) reminderAddOns.push("a working webcam");
+  if (flagEthernet) reminderAddOns.push("an ethernet cable connection if possible");
+  if (flagQuiet) reminderAddOns.push("a quiet, distraction-free location");
+  const addOnText = reminderAddOns.length > 0
+    ? " Please also have " + reminderAddOns.join(", ") + " ready."
+    : "";
+
+  // Build appointment focus text
+  let apptFocusText = "application and assessment";
+  if (currentApptType === 'app') apptFocusText = "application";
+  if (currentApptType === 'assess') apptFocusText = "assessment";
+
+  // ─── SMS TEMPLATES ───────────────────────────────────────────
+  let morningSMS = "", eveningSMS = "", followupSMS = "", rescheduleSMS = "", wfhSMS = "";
+
+  if (tpToggle) {
+    morningSMS = `Good morning, ${gradDisplayName}! It's ${agentDisplayName} from UMA — we've got your Teleperformance appointment today at ${time} EST and I'm excited to work with you! 🌟 Quick heads up: this one has a voice recording section so you'll want to be somewhere quiet, on a computer (not a phone or tablet!), connected by ethernet if you can, and ready 5 minutes early. I'll be calling from ${agent.WasPhone}. Reply YES to confirm — this is going to be a great appointment! 😊`;
+    followupSMS = `Hey ${gradDisplayName}, it's ${agentDisplayName} from UMA's Online Job Application Team — I just tried calling for your Teleperformance appointment and missed you! 📞 Is now still a good time? I really want to make sure we can get this taken care of for you today. Give me a call back at ${agent.WasPhone} and we'll jump right in!`;
+  } else {
+    morningSMS = `Good morning, ${gradDisplayName}! It's ${agentDisplayName} from UMA's Online Job Application Team — we've got your ${appointment} appointment today at ${time} EST and I'm genuinely looking forward to working with you! 🌟 This call is how we knock out your ${apptFocusText} and get you one giant step closer to landing this job, so it's worth showing up for. 😊 I'll be calling from ${agent.WasPhone} — please make sure you're on a computer (not a phone or tablet!) and have it ready 5 minutes early.${addOnText} Reply YES to confirm and I'll see you soon!`;
+    eveningSMS = `Hey ${gradDisplayName}! ${agentDisplayName} here from UMA's Online Job Application Team — just a heads up that we've got your ${appointment} appointment tomorrow at ${time} EST! 😊 Tomorrow's call is your chance to get your ${apptFocusText} moving forward with someone in your corner helping you through it — all you have to do is show up on your computer (not a phone or tablet!) and we'll handle the rest together. I'll be calling from ${agent.WasPhone}. Reply YES to confirm — see you tomorrow! 🌟`;
+    followupSMS = `Hey ${gradDisplayName}, it's ${agentDisplayName} from UMA's Online Job Application Team — I just tried calling for your ${appointment} appointment and missed you! 📞 Is now still a good time? I really want to make sure we can get this taken care of for you today. Give me a call back at ${agent.WasPhone} and we'll jump right in!`;
+    rescheduleSMS = `Hey ${gradDisplayName}, it's ${agentDisplayName} from UMA's Online Job Application Team. Looks like we missed each other today for your ${appointment} appointment — no worries, let's get you rescheduled! 😊 This is still a great opportunity and I don't want you to miss out on it. Give me a call or text at ${agent.WasPhone} and we'll find a time that works for you. Talk soon!`;
+  }
+
+  wfhSMS = `Hey ${gradDisplayName}, this is ${agentDisplayName} from UMA's Online Job Application Team. I've been trying to reach you for your ${appointment} appointment and I really don't want this opportunity to slip away from you — work from home positions are limited and genuinely hard to come by. 💙 Per our process, if we don't hear back by the end of your appointment window, we won't be able to keep you in consideration for this position and you'd need to connect with your recruiter for a new opportunity. Please call or text me at ${agent.WasPhone} right away if you're still interested — I'm here and ready to help you make this happen!`;
+
+  // TP evening and reschedule
+  if (tpToggle) {
+    eveningSMS = `Hey ${gradDisplayName}! ${agentDisplayName} here from UMA — just a heads up that we've got your Teleperformance appointment tomorrow at ${time} EST! 😊 This one has a voice recording section, so you'll want to be somewhere quiet, on a computer (not a phone or tablet!), ethernet connected if possible, and ready 5 minutes early. I'll be calling from ${agent.WasPhone}. Reply YES to confirm — see you tomorrow! 🌟`;
+    rescheduleSMS = `Hey ${gradDisplayName}, it's ${agentDisplayName} from UMA's Online Job Application Team. Looks like we missed each other today for your Teleperformance appointment — no worries, let's get you rescheduled! 😊 This is still a great opportunity and I don't want you to miss out. Give me a call or text at ${agent.WasPhone} and we'll find a time that works for you. Talk soon!`;
+  } else {
+    eveningSMS = `Hey ${gradDisplayName}! ${agentDisplayName} here from UMA's Online Job Application Team — just a heads up that we've got your ${appointment} appointment tomorrow at ${time} EST! 😊 Tomorrow's call is your chance to get your ${apptFocusText} moving forward with someone in your corner helping you through it — all you have to do is show up on your computer (not a phone or tablet!) and we'll handle the rest together.${addOnText} I'll be calling from ${agent.WasPhone}. Reply YES to confirm — see you tomorrow! 🌟`;
+  }
+
+  // ─── NOTE TEMPLATES ──────────────────────────────────────────
+  let noteTemplate = "";
+  if (tpToggle) {
+    noteTemplate = `Email Used: ${gradEmail}\n${today} ROTG @ ${gradPhone}.  -${agent.WasInitials}\nWas the grad ready for the appointment? \nWas the computer on? \nSpoken English:\n1-How did they sound? \n2-Did they repeat everything back? \n3-How were their listening skills? \n4-Did they use the whole 45 seconds? \nHow was their description? \nTyping - How well do you think they did? \nPersonality - How many did they answer? 72/72 \nDid they take your advice? \nBasic Analytical Ability - How many did they answer? 19/19 \nSales Competency - Did they make it to this section? Yes/No \nHow many did they answer? 20/20 \nDid they take your advice? \nWere there any distractions? \n`;
+  } else {
+    noteTemplate = `Email Used: ${gradEmail}\n${today} ROTG @ ${gradPhone}.  -${agent.WasInitials}\nWas the grad ready for the appointment? \nWas the computer on? \nDid Grad Listen to Advice? Yes\nAny Parts to Note That Grad Struggled On? No\nDid Grad Have Distractions? No`;
+  }
+
+  // ─── SET OUTPUTS ─────────────────────────────────────────────
+  document.getElementById("MorningSMSOutput").value = morningSMS;
+  document.getElementById("EveningSMSOutput").value = eveningSMS;
+  document.getElementById("FollowUpSMSOutput").value = followupSMS;
+  document.getElementById("RescheduleSMSOutput").value = rescheduleSMS;
+  document.getElementById("WfhSMSOutput").value = wfhSMS;
+  document.getElementById("NoteTemplate").value = noteTemplate;
+  document.getElementById("ReminderLine").value = `${gradName} - ${appointment} @ ${time} - ${systemID} - Reminder`;
+
+  // WFH section visibility
+  document.getElementById("wfhSection").style.display = "block";
+
+  // Switch to SMS tab by default (standard mode)
+  if (currentMode === 'standard') switchTab('sms');
+}
+
+// ─── CALL LIST GENERATE ──────────────────────────────────────────
+function generateCallList() {
+  const gradCLName = document.getElementById("CallListName").value.trim() || "there";
+  const phone = document.getElementById("CallListPhone").value.trim();
+  const sysID = document.getElementById("CallListSysID").value.trim();
+  const agent = getAgent();
+
+  const checks = [
+    { id: 'clTyping', text: 'a typing test retake' },
+    { id: 'clInternet', text: 'an internet speed test' },
+    { id: 'clAssessment', text: 'to complete their assessment' },
+    { id: 'clWorkspace', text: 'workspace photos' },
+  ];
+  const needed = checks.filter(c => document.getElementById(c.id).checked).map(c => c.text);
+  const needsText = needed.length > 0
+    ? "I'm reaching out because we still need " + needed.join(", ") + " from you to move forward."
+    : "I'm reaching out to follow up on your application.";
+
+  const agentCL = getAgent();
+  const agentCLFirst = agentCL.WasName.split(" ")[0] || agentCL.WasName;
+  const agentCLDisplay = currentNameFormat === 'first' ? agentCLFirst : agentCL.WasName;
+  const sms = `Hi ${gradCLName}! This is ${agentCLDisplay} from UMA's Online Job Application Team. ${needsText} Please give me a call or text at ${agentCL.WasPhone} when you get a chance — I want to make sure we can keep your application moving! 😊`;
+
+  document.getElementById("CallListSMSOutput").value = sms;
+  document.getElementById("callListOutput").style.display = "block";
+}
+
+// ─── COPY FUNCTIONS ───────────────────────────────────────────────
+function copyOutput(id, btn) {
+  const el = document.getElementById(id);
+  el.select();
+  el.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(el.value).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = "Copied! ✓";
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+function copySpan(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = "✓";
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+// ─── DARK MODE ───────────────────────────────────────────────────
+function toggleDark() {
+  const isDark = document.body.classList.toggle('dark');
+  document.getElementById('darkBtn').textContent = isDark ? '☀️' : '🌙';
+  try { localStorage.setItem('snarkerdoodle-dark', isDark ? '1' : '0'); } catch(e) {}
+}
+
+// ─── ACCIDENTAL CLOSE PREVENTION ─────────────────────────────────
+window.addEventListener('beforeunload', function(e) {
+  e.preventDefault();
+  e.returnValue = '';
+});
+
+// ─── INIT ────────────────────────────────────────────────────────
+// Restore dark mode preference
+try {
+  if (localStorage.getItem('snarkerdoodle-dark') === '1') {
+    document.body.classList.add('dark');
+    document.getElementById('darkBtn').textContent = '☀️';
+  }
+} catch(e) {}
+// Set correct initial mode state
+setMode('standard');
+
+</script>
+</body>
+</html>
