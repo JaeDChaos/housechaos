@@ -420,6 +420,88 @@
       }
     }
 
+    /* ── NAV ── */
+    .chaos-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 32px;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+    }
+
+    .nav-logo-text {
+      font-family: 'Chewy', cursive;
+      font-size: 1.1rem;
+      color: var(--crimson-glow);
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Patrick Hand', cursive;
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0; right: 0;
+      height: 1px;
+      background: var(--crimson-bright);
+      transform: scaleX(0);
+      transition: transform 0.2s ease;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .nav-links a.active {
+      color: var(--gold-light);
+    }
+
+    .nav-links a.active::after {
+      transform: scaleX(1);
+      background: var(--gold);
+    }
+
+    /* push content down so nav doesn't overlap */
+    .portfolio-wrap {
+      padding-top: 110px;
+    }
+
     /* ── ANIMATIONS ── */
     @keyframes fadeDown {
       from { opacity: 0; transform: translateY(-20px); }
@@ -435,6 +517,19 @@
 
 <div class="stars"></div>
 <div class="nebula"></div>
+
+<!-- NAV -->
+<nav class="chaos-nav">
+  <a href="https://housechaos.org" class="nav-logo">
+    <img src="house-chaos-crest.jpg" alt="House Chaos crest" />
+    <span class="nav-logo-text">House Chaos</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="https://housechaos.org/#the-den">The Den</a></li>
+    <li><a href="portfolio.html" class="active">Projects</a></li>
+    <li><a href="mailto:jaedchaos@gmail.com">Contact</a></li>
+  </ul>
+</nav>
 
 <div class="portfolio-wrap">
 
@@ -779,6 +874,3 @@
   </footer>
 
 </div><!-- /portfolio-wrap -->
-
-</body>
-</html>
