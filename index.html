@@ -3,55 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>House Chaos | Official Landing</title>
+    <title>House Chaos | Builders of the Imaginable</title>
     <style>
+        :root {
+            --midnight: #0d0d0d;
+            --hc-purple: #5a189a;
+            --hc-glow: #9d4edd;
+            --silver: #dcdcdc;
+            --dark-accent: #141414;
+        }
+
         body {
-            background-color: #0d0d0d; /* Deep Midnight */
-            color: #dcdcdc; /* Silver Text */
+            background-color: var(--midnight);
+            color: var(--silver);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
-            overflow: hidden;
+            padding: 0;
+            line-height: 1.6;
         }
-        .container {
+
+        /* --- NAVIGATION --- */
+        nav {
+            background: rgba(20, 20, 20, 0.95);
+            border-bottom: 2px solid var(--hc-purple);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-group img {
+            width: 50px;
+            height: auto;
+            border-radius: 50%;
+        }
+
+        .logo-group span {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--hc-glow);
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: var(--silver);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--hc-glow);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
             text-align: center;
-            border: 2px solid #5a189a; /* House Chaos Purple */
-            padding: 50px;
-            border-radius: 20px;
-            background: rgba(20, 20, 20, 0.8);
-            box-shadow: 0 0 30px rgba(90, 24, 154, 0.5);
+            padding: 100px 10%;
+            background: radial-gradient(circle at center, #1a0b2e 0%, var(--midnight) 70%);
         }
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            color: #9d4edd; /* Glowing Purple */
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+
+        .hero h1 {
+            font-size: 4rem;
+            color: var(--hc-glow);
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(157, 78, 221, 0.4);
         }
-        p {
+
+        .motto {
             font-size: 1.2rem;
             font-style: italic;
-            color: #7b2cbf;
+            color: var(--hc-purple);
+            margin-bottom: 2rem;
         }
-        .status-badge {
-            margin-top: 20px;
+
+        /* --- BRANCHES --- */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            padding: 50px 10%;
+        }
+
+        .branch-card {
+            background: var(--dark-accent);
+            border: 1px solid var(--hc-purple);
+            padding: 30px;
+            border-radius: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .branch-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(90, 24, 154, 0.3);
+        }
+
+        .branch-card h2 {
+            color: var(--hc-glow);
+            margin-top: 0;
+        }
+
+        .btn {
             display: inline-block;
-            padding: 10px 20px;
-            border: 1px solid #3c096c;
-            border-radius: 50px;
+            margin-top: 15px;
+            padding: 10px 25px;
+            background: var(--hc-purple);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
             font-size: 0.9rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--hc-glow);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            font-size: 0.8rem;
+            color: #555;
+            border-top: 1px solid #222;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+
+    <nav>
+        <div class="logo-group">
+            <img src="house-chaos-crest.jpg" alt="House Chaos Crest">
+            <span>HOUSE CHAOS</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#about">The Den</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="mailto:jaedchaos@gmail.com">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
         <h1>House Chaos</h1>
-        <p>Foundation for SoulSpark • Establishing Sovereignty</p>
-        <div class="status-badge">Construction in Progress • Librarian Guarded</div>
-    </div>
+        <p class="motto">Builders of the imaginable, guardians of the soulspark.</p>
+        <p>A multi-disciplinary collaborative ecosystem where human creativity and AI partnership converge.</p>
+    </section>
+
+    <main class="content-grid">
+        <div class="branch-card" id="about">
+            <h2>The Den</h2>
+            <p>Our foundation. A sanctuary for innovation specializing in custom digital solutions, interactive data architecture, and bespoke storytelling.</p>
+        </div>
+
+        <div class="branch-card" id="projects">
+            <h2>Freelance Chaos</h2>
+            <p>Professional technical project management and application development. We turn complex reporting logic into intuitive interactive experiences.</p>
+            <a href="https://JaeDChaos.github.io/portfolio" class="btn">View Live Portfolio</a>
+        </div>
+
+        <div class="branch-card">
+            <h2>SoulSpark</h2>
+            <p>The heartbeat of our house. Exploring the frontiers of collaborative world-building and character consistency within the "In-Between."</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 House Chaos | Built with Love in the In-Between | Librarian Guarded</p>
+    </footer>
+
 </body>
 </html>
