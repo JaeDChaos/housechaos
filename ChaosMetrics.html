@@ -394,7 +394,60 @@
 </style>
 </head>
 <body>
+<!-- ============================================================
+     CHAOS PORTFOLIO BANNER
+     Paste this right after the opening <body> tag on each tool page.
+     Shows a snarky banner ONLY when the page is viewed outside the iframe.
+     Replace "chaos_calculator.html" with this page's own filename in the
+     data-self attribute so the "you're looking at X" message is accurate.
+     ============================================================ -->
 
+<style>
+  #chaos-portal-banner {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 99999;
+    background: linear-gradient(90deg, #0d0d0d 0%, #1a0505 50%, #0d0d0d 100%);
+    border-bottom: 1px solid rgba(139,0,0,0.5);
+    padding: 10px 20px;
+    font-family: 'Patrick Hand', cursive, sans-serif;
+    font-size: 14px;
+    color: #e8e0d0;
+    text-align: center;
+    box-shadow: 0 2px 20px rgba(139,0,0,0.3);
+    animation: bannerSlideDown 0.4s ease both;
+  }
+  #chaos-portal-banner a {
+    color: #f0d080;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  #chaos-portal-banner a:hover { color: #e74c3c; }
+  @keyframes bannerSlideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
+  }
+</style>
+
+<div id="chaos-portal-banner">
+  Ah, loved it so much you had to go digging for the root file? Clever. 🦊
+  <a href="https://housechaos.org/#portfolio">Click here to go back when you're ready.</a>
+</div>
+
+<script>
+  (function() {
+    // Show banner only when NOT inside an iframe
+    if (window.self === window.top) {
+      document.getElementById('chaos-portal-banner').style.display = 'block';
+    }
+  })();
+</script>
+
+<!-- ============================================================
+     END CHAOS PORTFOLIO BANNER
+     ============================================================ -->
 <div class="header">
   <div class="title-block">
     <h1>ChaosMetrics</h1>
