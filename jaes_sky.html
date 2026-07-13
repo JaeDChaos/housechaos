@@ -242,7 +242,7 @@ Object.entries(CONST_DATA).forEach(([id,data])=>{
   const ca=raDecToAltAz(data.ra/15,data.dec,now);
   const cp=toXYZ(ca.alt,ca.az,RADIUS*0.98);
   const hm=new THREE.Mesh(
-    new THREE.SphereGeometry(50,8,8),
+    new THREE.SphereGeometry(75,8,8),
     new THREE.MeshBasicMaterial({visible:false})
   );
   hm.position.copy(cp);
@@ -389,7 +389,17 @@ function updateDwell(){
 }
 function checkGaze(){
   if(panelOpen)return;
-  raycaster.setFromCamera(new THREE.Vector2(0,0),camera);
+  if(isVRMode){
+    // In VR, the regular camera isn't head-tracked — use the XR camera
+    const xrCam=renderer.xr.getCamera(camera);
+    const pos=new THREE.Vector3();
+    const dir=new THREE.Vector3();
+    xrCam.getWorldPosition(pos);
+    xrCam.getWorldDirection(dir);
+    raycaster.set(pos,dir);
+  } else {
+    raycaster.setFromCamera(new THREE.Vector2(0,0),camera);
+  }
   const hits=raycaster.intersectObjects(hitMeshes);
   if(hits.length)setHovered(hits[0].object.userData);
   else clearHovered();
@@ -431,10 +441,8 @@ window.enterVR=async function(){
   renderer.xr.setSession(session);
   isVRMode=true;
   document.getElementById("vr-btn").style.display="none";
-  // Hide HTML UI (not needed in VR — 3D panel handles it)
-  document.getElementById("hint").style.display="none";
-  document.getElementById("const-label").style.display="none";
-  document.getElementById("dwell-ring").style.display="none";
+  // Keep dwell ring + label visible in VR so user knows when they've locked on
+  // (dom-overlay not required — Quest renders these as passthrough HUD)
 
   // Controller trigger OR hand pinch -> toggle panel
   session.addEventListener("selectstart",()=>{
