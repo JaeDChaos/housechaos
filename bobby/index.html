@@ -1012,14 +1012,31 @@
     if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
   });
 
-  // Form submit — mock only, logs to console
-  form.addEventListener('submit', e => {
+  // Form submit — posts to Formspree, shows success state
+  form.addEventListener('submit', async e => {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(form));
-    console.log('[Driveway Detail Co. — Quote Request]', data);
-    // TODO: wire to Formspree or Bobby's email once we have his address
-    form.classList.add('hidden');
-    success.classList.add('shown');
+    const submitBtn = form.querySelector('.modal-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+    try {
+      const response = await fetch('https://formspree.io/f/mbgdvkpz', {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (response.ok) {
+        form.classList.add('hidden');
+        success.classList.add('shown');
+      } else {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send My Request';
+        alert('Something went wrong — please try again or text Bobby directly.');
+      }
+    } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send My Request';
+      alert('Something went wrong — please try again or text Bobby directly.');
+    }
   });
 </script>
 
