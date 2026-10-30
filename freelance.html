@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Freelance Chaos — Work With Jae</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Barlow:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Cal.com element-click embed -->
+  <script type="text/javascript">
+    (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+    Cal("init", "freelance-chaos-discovery-call", {origin:"https://app.cal.com"});
+    Cal.config = Cal.config || {};
+    Cal.config.forwardQueryParams = true;
+    Cal.ns["freelance-chaos-discovery-call"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0d0b09;
+      --bg-raised:  #131008;
+      --bg-card:    #181410;
+      --red:        #d9614a;
+      --red-bright: #e5724f;
+      --amber:      #c8873a;
+      --gold:       #dfa832;
+      --text:       #e2d9ce;
+      --text-dim:   #8f877e;
+      --rule:       #252018;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-weight: 400;
+      line-height: 1.75;
+      font-size: 16px;
+    }
+
+    /* ── NAV ────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 2.5rem;
+      background: rgba(13,11,9,0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+    }
+
+    .nav-logo img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+    }
+
+    .nav-logo-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      color: var(--text);
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 2.25rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-dim);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      padding-bottom: 2px;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.current {
+      color: var(--text);
+      border-bottom: 1px solid var(--red);
+    }
+
+    /* ── HERO ───────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 40%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(217,97,74,0.07) 0%, transparent 68%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 1.1rem;
+      position: relative;
+    }
+
+    .hero h1 {
+      font-family: 'Chewy', cursive;
+      font-size: clamp(3.2rem, 7.5vw, 5.8rem);
+      color: var(--red);
+      line-height: 1.06;
+      margin-bottom: 1.6rem;
+      text-shadow: 0 0 80px rgba(217,97,74,0.25);
+      position: relative;
+    }
+
+    .hero-lead {
+      font-size: 1.1rem;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--text);
+      max-width: 560px;
+      margin: 0 auto 0.65rem;
+      position: relative;
+    }
+
+    .hero-body {
+      font-size: 0.92rem;
+      color: var(--text-dim);
+      max-width: 480px;
+      margin: 0 auto 3rem;
+      position: relative;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* ── BUTTONS ────────────────────────── */
+    .btn {
+      display: inline-block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      border-radius: 3px;
+      padding: 0.85rem 2rem;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.14s, border-color 0.18s, color 0.18s;
+      text-decoration: none;
+      border: 1px solid transparent;
+    }
+
+    .btn-red {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red);
+    }
+
+    .btn-red:hover {
+      background: var(--red-bright);
+      border-color: var(--red-bright);
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-dim);
+      border-color: var(--rule);
+    }
+
+    .btn-ghost:hover {
+      color: var(--amber);
+      border-color: var(--amber);
+    }
+
+    /* ── SECTION WRAPPER ────────────────── */
+    .section-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 5.5rem 2rem;
+    }
+
+    .section-head {
+      margin-bottom: 3rem;
+    }
+
+    .section-head .eyebrow {
+      display: block;
+      margin-bottom: 0.6rem;
+    }
+
+    .section-head h2 {
+      font-family: 'Chewy', cursive;
+      font-size: clamp(2rem, 4vw, 2.9rem);
+      color: var(--red);
+      line-height: 1.1;
+      margin-bottom: 0.6rem;
+    }
+
+    .section-head p {
+      color: var(--text-dim);
+      font-size: 0.93rem;
+      max-width: 560px;
+    }
+
+    /* ── WHAT I BUILD ───────────────────── */
+    .services {
+      background: var(--bg);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .svc-card {
+      background: var(--bg-card);
+      border: 1px solid var(--rule);
+      border-radius: 5px;
+      padding: 2rem 1.8rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .svc-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--red) 0%, transparent 100%);
+    }
+
+    .svc-icon {
+      font-size: 1.75rem;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .svc-card h3 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .svc-card p {
+      font-size: 0.87rem;
+      color: var(--text-dim);
+      line-height: 1.65;
+    }
+
+    /* ── CLIENT WORK ────────────────────── */
+    .work {
+      background: var(--bg-raised);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .client-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .client-preview {
+      background: #100e0b;
+      padding: 2.25rem 2rem;
+      border-right: 1px solid var(--rule);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .browser-chrome {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 0.65rem;
+    }
+
+    .browser-chrome span {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot-r { background: #d9614a; }
+    .dot-a { background: #c8873a; }
+    .dot-g { background: #5ca85c; }
+
+    .browser-url {
+      font-family: monospace;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      background: rgba(255,255,255,0.04);
+      padding: 0.2rem 0.65rem;
+      border-radius: 3px;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+    }
+
+    .preview-placeholder {
+      flex: 1;
+      border: 1px dashed var(--rule);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 2.5rem;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    .preview-placeholder .lbl {
+      font-size: 0.72rem;
+      color: #4a4540;
+      font-family: monospace;
+    }
+
+    .client-info {
+      padding: 2.5rem 2.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .client-num {
+      font-family: 'Chewy', cursive;
+      font-size: 4rem;
+      color: var(--rule);
+      line-height: 1;
+      margin-bottom: 0.1rem;
+    }
+
+    .client-info h3 {
+      font-family: 'Chewy', cursive;
+      font-size: 2rem;
+      color: var(--gold);
+      margin-bottom: 0.6rem;
+    }
+
+    .client-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .client-tag {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.67rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--amber);
+      border: 1px solid rgba(200,135,58,0.28);
+      padding: 0.2rem 0.55rem;
+      border-radius: 3px;
+    }
+
+    .client-story-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.67rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.35rem;
+    }
+
+    .client-info p {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      line-height: 1.65;
+      margin-bottom: 1rem;
+    }
+
+    .client-quote {
+      background: rgba(200,135,58,0.07);
+      border-left: 2px solid var(--amber);
+      padding: 0.8rem 1rem;
+      border-radius: 0 3px 3px 0;
+      margin: 0 0 1.25rem;
+      font-size: 0.87rem;
+      color: var(--text);
+      font-style: italic;
+    }
+
+    .client-turnaround {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      margin-bottom: 1.4rem;
+    }
+
+    .client-turnaround strong {
+      color: var(--red);
+      font-style: normal;
+    }
+
+    .client-link {
+      color: var(--red);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(217,97,74,0.3);
+      padding-bottom: 1px;
+      transition: color 0.18s, border-color 0.18s;
+      display: inline-block;
+    }
+
+    .client-link:hover {
+      color: var(--red-bright);
+      border-color: var(--red-bright);
+    }
+
+    /* ── PRICING ────────────────────────── */
+    .pricing {
+      background: var(--bg);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .price-card {
+      background: var(--bg-card);
+      border: 1px solid var(--rule);
+      border-radius: 5px;
+      padding: 2rem 1.75rem;
+      position: relative;
+    }
+
+    .price-card.pop {
+      border-color: rgba(217,97,74,0.35);
+      background: linear-gradient(145deg, #1b1209, var(--bg-card));
+    }
+
+    .pop-badge {
+      position: absolute;
+      top: -1px; right: 1.4rem;
+      background: var(--red);
+      color: #fff;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+      border-radius: 0 0 3px 3px;
+    }
+
+    .price-tier {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.67rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.4rem;
+    }
+
+    .price-card h3 {
+      font-family: 'Chewy', cursive;
+      font-size: 1.55rem;
+      color: var(--gold);
+      margin-bottom: 0.1rem;
+    }
+
+    .price-amount {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 1.9rem;
+      color: var(--red);
+      margin-bottom: 0.5rem;
+      line-height: 1.1;
+    }
+
+    .price-desc {
+      font-size: 0.84rem;
+      color: var(--text-dim);
+      line-height: 1.55;
+      margin-bottom: 1.25rem;
+      min-height: 2.5rem;
+    }
+
+    .price-includes {
+      list-style: none;
+      padding: 0;
+    }
+
+    .price-includes li {
+      font-size: 0.83rem;
+      color: var(--text-dim);
+      padding: 0.28rem 0 0.28rem 1.2rem;
+      position: relative;
+      border-top: 1px solid var(--rule);
+    }
+
+    .price-includes li:first-child { border-top: none; }
+
+    .price-includes li::before {
+      content: '✦';
+      position: absolute;
+      left: 0;
+      color: var(--amber);
+      font-size: 0.55rem;
+      top: 0.48rem;
+    }
+
+    /* ── BOOK A CALL ────────────────────── */
+    .cta-band {
+      background: var(--bg-raised);
+      border-top: 1px solid var(--rule);
+    }
+
+    .cta-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+      text-align: center;
+    }
+
+    .cta-inner .eyebrow {
+      display: block;
+      margin-bottom: 0.8rem;
+    }
+
+    .cta-inner h2 {
+      font-family: 'Chewy', cursive;
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      color: var(--red);
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .cta-inner p {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      max-width: 500px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .cta-note {
+      margin-top: 1.1rem;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    /* ── FOOTER ─────────────────────────── */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 2.25rem 2rem;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.78rem;
+      line-height: 1.9;
+    }
+
+    footer a {
+      color: var(--amber);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    footer a:hover { color: var(--gold); }
+
+    /* ── RESPONSIVE ─────────────────────── */
+    @media (max-width: 760px) {
+      .client-card {
+        grid-template-columns: 1fr;
+      }
+
+      .client-preview {
+        border-right: none;
+        border-bottom: 1px solid var(--rule);
+      }
+
+      nav { padding: 0.85rem 1.25rem; }
+      .nav-links { gap: 1.25rem; }
+      .nav-logo-text { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .btn { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAVIGATION ─────────────────────── -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="house-chaos-crest.jpg" alt="House Chaos crest">
+    <span class="nav-logo-text">HOUSE CHAOS</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">The Den</a></li>
+    <li><a href="portfolio.html">Projects</a></li>
+    <li><a href="freelance.html" class="current">Hire Me</a></li>
+    <li><a href="mailto:jaedchaos@gmail.com">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ───────────────────────────── -->
+<header class="hero">
+  <span class="eyebrow">✦ Freelance Chaos ✦</span>
+  <h1>Websites That<br>Actually Fit You</h1>
+  <p class="hero-lead">You don't need a corporate agency. You need someone who listens, builds fast, and picks up the phone.</p>
+  <p class="hero-body">Jae is neurospicy, works with AI, and turns your real needs into something that works — usually in a week.</p>
+  <div class="hero-ctas">
+    <button class="btn btn-red"
+      data-cal-link="jae-chaos/freelance-chaos-discovery-call"
+      data-cal-namespace="freelance-chaos-discovery-call"
+      data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"auto"}'>
+      Book a Free Discovery Call
+    </button>
+    <a href="portfolio.html" class="btn btn-ghost">See the Work</a>
+  </div>
+</header>
+
+<!-- ── WHAT I BUILD ─────────────────────── -->
+<div class="services">
+  <div class="section-inner">
+    <div class="section-head">
+      <span class="eyebrow">What I Build</span>
+      <h2>Sites for Real People</h2>
+      <p>No templates, no bloat. Clean, custom-built sites that work the way you do — and that clients actually remember.</p>
+    </div>
+    <div class="services-grid">
+      <div class="svc-card">
+        <span class="svc-icon">🛠️</span>
+        <h3>One-Pagers</h3>
+        <p>Your whole story in one scroll. Perfect for solo professionals, tradespeople, and anyone who needs a solid online presence fast.</p>
+      </div>
+      <div class="svc-card">
+        <span class="svc-icon">📄</span>
+        <h3>Multi-Page Sites</h3>
+        <p>About, Services, Gallery, Contact — the full package. Built to represent you the way you'd want, and to grow with you.</p>
+      </div>
+      <div class="svc-card">
+        <span class="svc-icon">🔧</span>
+        <h3>Custom Tools</h3>
+        <p>Calculators, trackers, forms, booking flows. If you're doing the same thing over and over by hand, there's a better way.</p>
+      </div>
+      <div class="svc-card">
+        <span class="svc-icon">🔄</span>
+        <h3>Ongoing Support</h3>
+        <p>New photo? Updated hours? Changed your services? Monthly maintenance means you never have to figure it out alone.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CLIENT WORK ─────────────────────── -->
+<div class="work">
+  <div class="section-inner">
+    <div class="section-head">
+      <span class="eyebrow">Real Work</span>
+      <h2>Client Zero</h2>
+      <p>Every portfolio starts somewhere. Here's where Freelance Chaos started.</p>
+    </div>
+    <div class="client-card">
+      <div class="client-preview">
+        <div class="browser-chrome">
+          <span class="dot-r"></span>
+          <span class="dot-a"></span>
+          <span class="dot-g"></span>
+        </div>
+        <span class="browser-url">housechaos.org/bobby</span>
+        <div class="preview-placeholder">
+          📸<br>
+          Screenshot Coming Soon
+          <span class="lbl">Drop KennedyScreenshot.png here</span>
+        </div>
+      </div>
+      <div class="client-info">
+        <div class="client-num">01</div>
+        <h3>Driveway Detailing Co.</h3>
+        <div class="client-tags">
+          <span class="client-tag">HTML</span>
+          <span class="client-tag">CSS</span>
+          <span class="client-tag">One-Pager</span>
+          <span class="client-tag">Service Business</span>
+        </div>
+        <p class="client-story-label">How It Started</p>
+        <p>Bobby Kennedy spotted Jae struggling with a dead car battery in an AutoZone parking lot at 9pm. He was a mechanic in a hurry — and he stopped and swapped the battery anyway, just because he had the skills and the time. Jae offered him a website in return. He said yes. That's Client Zero.</p>
+        <blockquote class="client-quote">"Looks like a $1,500 site." — Bobby, one week later. Already had three referrals lined up before the ink dried.</blockquote>
+        <p class="client-turnaround">Turnaround: <strong>one week</strong> on Friday hours only.</p>
+        <a href="https://www.housechaos.org/bobby/index" class="client-link" target="_blank" rel="noopener noreferrer">View Live Site →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PRICING ─────────────────────────── -->
+<div class="pricing">
+  <div class="section-inner">
+    <div class="section-head">
+      <span class="eyebrow">Pricing</span>
+      <h2>Clear Rates. No Surprises.</h2>
+      <p>Flat rates mean you know exactly what you're getting before we start. No ticking clock, no surprise invoice at the end.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <p class="price-tier">Starting at</p>
+        <h3>One-Pager</h3>
+        <div class="price-amount">$400–600</div>
+        <p class="price-desc">Your whole story on one clean, scrollable page.</p>
+        <ul class="price-includes">
+          <li>Custom design</li>
+          <li>Mobile-friendly build</li>
+          <li>Contact form</li>
+          <li>One round of revisions</li>
+        </ul>
+      </div>
+
+      <div class="price-card pop">
+        <div class="pop-badge">Most Common</div>
+        <p class="price-tier">Full Package</p>
+        <h3>Multi-Page Site</h3>
+        <div class="price-amount">$800–1,200</div>
+        <p class="price-desc">About, Services, Gallery, Contact — the full package.</p>
+        <ul class="price-includes">
+          <li>Multiple pages</li>
+          <li>Custom design per section</li>
+          <li>Mobile-friendly build</li>
+          <li>Contact and inquiry forms</li>
+          <li>One round of revisions</li>
+        </ul>
+      </div>
+
+      <div class="price-card">
+        <p class="price-tier">As Needed</p>
+        <h3>Quick Changes</h3>
+        <div class="price-amount">$75–100</div>
+        <p class="price-desc">Small updates after launch. Fast turnaround.</p>
+        <ul class="price-includes">
+          <li>Text and photo updates</li>
+          <li>New sections added</li>
+          <li>Form adjustments</li>
+        </ul>
+      </div>
+
+      <div class="price-card">
+        <p class="price-tier">Monthly</p>
+        <h3>Maintenance</h3>
+        <div class="price-amount">$50/mo</div>
+        <p class="price-desc">Keep it live, fresh, and exactly how you need it.</p>
+        <ul class="price-includes">
+          <li>Photo swaps</li>
+          <li>Text updates</li>
+          <li>Seasonal refreshes</li>
+          <li>You email, I fix it</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── BOOK A CALL ─────────────────────── -->
+<div class="cta-band">
+  <div class="cta-inner">
+    <span class="eyebrow">Let's Talk</span>
+    <h2>Got a Thing That Needs Building?</h2>
+    <p>Discovery calls are free, 30 minutes, and zero pressure. We figure out what you actually need and whether we're the right fit — that's it.</p>
+    <button class="btn btn-red"
+      data-cal-link="jae-chaos/freelance-chaos-discovery-call"
+      data-cal-namespace="freelance-chaos-discovery-call"
+      data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"auto"}'>
+      Book Your Free Discovery Call
+    </button>
+    <p class="cta-note">Fridays only · Google Meet · No spam, no hard sell</p>
+  </div>
+</div>
+
+<!-- ── FOOTER ─────────────────────────── -->
+<footer>
+  <p>© 2026 House Chaos &nbsp;|&nbsp; <a href="portfolio.html">See the Portfolio</a> &nbsp;|&nbsp; <a href="mailto:jaedchaos@gmail.com">jaedchaos@gmail.com</a></p>
+  <p>Built with Love in the In-Between &nbsp;|&nbsp; Librarian Guarded</p>
+</footer>
+
+</body>
+</html>
